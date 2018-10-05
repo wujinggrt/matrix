@@ -1,7 +1,3 @@
-#include <vector>
-#include <string>
-#include <iostream>
-#include <initializer_list>
 
 using namespace std;
 
@@ -23,14 +19,17 @@ void print_test(initializer_list<initializer_list<T>> ls)
 
 int main()
 {
-    Mat<int> m{{1}, {2}, {3}};
-    for (auto e: m)
-    {
-        for (auto ee: e)
-        {
-            cout << ee << '\n';
-        }
-        cout << '\n';
-    }
+    wj::Mat<int> m{{1}, {2}, {3}};
+    wj::Mat<int> mm{{1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 9}};
+    auto mmm = mm * m;
+    mmm.print();
+    auto a = 5.0 * mm;
+    auto b = mm * 5.0;
+    b.print();
+    auto c = a + b;
+    c.print();
+
     return 0;
 }
