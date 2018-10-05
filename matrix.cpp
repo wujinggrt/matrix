@@ -17,9 +17,9 @@ void print_test(initializer_list<initializer_list<T>> ls)
     cout << '\n';
 }
 
-int main()
+void test()
 {
-    wj::Mat<int> m{{1}, {2}, {3}};
+        wj::Mat<int> m{{1}, {2}, {3}};
     wj::Mat<int> mm{{1, 2, 3},
                 {4, 5, 6},
                 {7, 8, 9}};
@@ -42,8 +42,48 @@ int main()
     cout << "/:\n";
     e.print();
 
-    auto f = c - m;
-    c.print();
+    auto f = a.dot_product(e);
+    cout << "dot_product:\n";
+    f.print();
+    
+    auto g = 1000 + a;
+    cout << "g + a:\n";
+    g.print();
+
+    auto h = a + 1000;
+    cout << "a + 1000:\n";
+    h.print();
+
+    auto ii = h - 1000;
+    cout << "h - 1000:\n";
+    ii.print();
+
+    auto kk = a / 2;
+    cout << "a / 2:\n";
+    kk.print();
+
+    auto l = 2 / a;
+    cout << "2 / a:\n";
+    l.print();
+}
+
+void test_double()
+{
+    wj::Mat<double> m{{1., 2., 3.},
+                {4., 5., 6.},
+                {7., 8., 9.}};   
+    auto a = 2 * m;
+    cout << "2 * a:\n ";
+    a.print();
+
+    auto b = 2 / m;
+    cout << "2 / m:\n";
+    b.print();
+}
+
+int main()
+{
+    test_double();
     
     return 0;
 }

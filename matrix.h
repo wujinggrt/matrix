@@ -17,7 +17,28 @@ namespace wj
     Mat<T> operator+(double n, const Mat<T> &m);
 
     template<typename T>
+    Mat<T> operator-(double n, const Mat<T> &m);
+
+    template<typename T>
     Mat<T> operator*(double n, const Mat<T> &m);
+
+    template<typename T>
+    Mat<T> operator/(double n, const Mat<T> &m);
+
+    template<typename T>
+    Mat<T> operator+(const Mat<T> &m, double n);
+
+    template<typename T>
+    Mat<T> operator-(const Mat<T> &m, double n);
+
+    template<typename T>
+    Mat<T> operator*(const Mat<T> &m, double n);
+
+    template<typename T>
+    Mat<T> operator/(const Mat<T> &m, double n);
+
+    template<typename T>
+    ostream& operator<<(ostream& os, const Mat<T> &m);
 
     template<typename T>
     class Mat
@@ -30,7 +51,16 @@ namespace wj
         // using iterator = typename std::vector<std::vector<T>>::iterator;
 
         friend Mat<T> operator+<>(double n, const Mat<T> &m);
+        friend Mat<T> operator-<>(double n, const Mat<T> &m);
         friend Mat<T> operator*<>(double n, const Mat<T> &m);
+        friend Mat<T> operator/<>(double n, const Mat<T> &m);
+
+        friend Mat<T> operator+<>(const Mat<T> &m, double n);
+        friend Mat<T> operator-<>(const Mat<T> &m, double n);
+        friend Mat<T> operator*<>(const Mat<T> &m, double n);
+        friend Mat<T> operator/<>(const Mat<T> &m, double n);
+
+        friend ostream& operator<<<>(ostream& os, const Mat<T> &m);
         
     public:
         Mat(std::initializer_list<std::vector<T>> ls)
@@ -109,10 +139,10 @@ namespace wj
         {
             THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
 
-            Mat<T> ret(row_size(), other.col_size());
+            Mat<T> ret(row_size(), col_size());
             for (int i = 0; i < row_size(); ++i)
             {
-                for (int j = 0; j < other.col_size(); ++j)
+                for (int j = 0; j < col_size(); ++j)
                 {
                     ret[i][j] = vec_[i][j] + other.vec_[i][j];
                 }
@@ -124,10 +154,10 @@ namespace wj
         {
             THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
 
-            Mat<T> ret(row_size(), other.col_size());
+            Mat<T> ret(row_size(), col_size());
             for (int i = 0; i < row_size(); ++i)
             {
-                for (int j = 0; j < other.col_size(); ++j)
+                for (int j = 0; j < col_size(); ++j)
                 {
                     ret[i][j] = vec_[i][j] - other.vec_[i][j];
                 }
@@ -145,15 +175,15 @@ namespace wj
                     );
             }
 
-            Mat<T> ret(vec_.size(), other.vec_[0].size());
+            Mat<T> ret(vec_.size(), other.col_size());
             // this rows
-            for (int i = 0; i < vec_.size(); ++i)
+            for (int i = 0; i < row_size(); ++i)
             {
                 // other cols
-                for (int j = 0; j < other.vec_[0].size(); ++j)
+                for (int j = 0; j < other.col_size(); ++j)
                 {
                     ret[i][j] = 0.;
-                    for (int k = 0; k < vec_[i].size(); ++k)
+                    for (int k = 0; k < col_size(); ++k)
                     {
                         ret[i][j] += vec_[i][k] * other.vec_[k][j];
                     }
@@ -166,12 +196,10 @@ namespace wj
         {
             THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
 
-            Mat<T> ret(vec_.size(), other.vec_[0].size());
-            // this rows
-            for (int i = 0; i < vec_.size(); ++i)
+            Mat<T> ret(row_size(), col_size());
+            for (int i = 0; i < row_size(); ++i)
             {
-                // other cols
-                for (int j = 0; j < other.vec_[0].size(); ++j)
+                for (int j = 0; j < col_size(); ++j)
                 {
                     ret[i][j] = vec_[i][j] / other.vec_[i][j];
                 }
@@ -179,25 +207,91 @@ namespace wj
             return ret;
         }
 
-        Mat<T> operator*(const double &n) const
+        Mat<T> dot_product(const Mat<T> &other) const
         {
-            return n * (*this);
+            THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
+
+            Mat<T> ret(row_size(), col_size());
+            for (int i = 0; i < row_size(); ++i)
+            {
+                for (int j = 0; j < col_size(); ++j)
+                {
+                    ret[i][j] = vec_[i][j] * other.vec_[i][j];
+                }
+            }
+            return ret;
         }
 
     };
 
+#define BINARY_OPERATOR_OVERLOAD_RETURN(n, op, mat) \
+    Mat<T> ret(mat.row_size(), mat.col_size()); \
+    for (int i = 0; i < mat.row_size(); ++i) \
+    { \
+        for (int j = 0; j < mat.col_size(); ++j) \
+        { \
+            ret[i][j] = n op mat.vec_[i][j]; \
+        } \
+    } \
+    return ret;
+
+    template<typename T>
+    Mat<T> operator+(double n, const Mat<T> &m)
+    {
+        BINARY_OPERATOR_OVERLOAD_RETURN(n, +, m)
+    }
+    
+    template<typename T>
+    Mat<T> operator-(double n, const Mat<T> &m)
+    {
+        BINARY_OPERATOR_OVERLOAD_RETURN(n, -, m)
+    }
+
     template<typename T>
     Mat<T> operator*(double n, const Mat<T> &m)
     {
-        Mat<T> ret(m.row_size(), m.col_size());
-        for (int i = 0; i < m.row_size(); ++i)
-        {
-            for (int j = 0; j < m.col_size(); ++j)
-            {
-                ret[i][j] = n * m.vec_[i][j];
-            }
-        }
-        return ret;
+        BINARY_OPERATOR_OVERLOAD_RETURN(n, *, m)
+    }
+    
+    template<typename T>
+    Mat<T> operator/(double n, const Mat<T> &m)
+    {
+        BINARY_OPERATOR_OVERLOAD_RETURN(n, /, m)
+    }
+    
+#define REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(mat, op, n) \
+    Mat<T> ret(mat.row_size(), mat.col_size()); \
+    for (int i = 0; i < mat.row_size(); ++i) \
+    { \
+        for (int j = 0; j < mat.col_size(); ++j) \
+        { \
+            ret[i][j] = mat.vec_[i][j] op n; \
+        } \
+    } \
+    return ret;
+
+    template<typename T>
+    Mat<T> operator+(const Mat<T> &m, double n)
+    {
+        REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(m, +, n)
+    }
+
+    template<typename T>
+    Mat<T> operator-(const Mat<T> &m, double n)
+    {
+        REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(m, -, n)
+    }
+
+    template<typename T>
+    Mat<T> operator*(const Mat<T> &m, double n)
+    {
+        REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(m, *, n)
+    }
+
+    template<typename T>
+    Mat<T> operator/(const Mat<T> &m, double n)
+    {
+        REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(m, /, n)
     }
 
 }
