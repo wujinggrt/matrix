@@ -30,7 +30,7 @@ void test()
     auto b = mm * 5.0;
     cout << "a:\n";
     a.print();
-    auto c = a + b;
+    auto c = a + b + a;
     cout << "+:c:\n";
     c.print();
 
@@ -189,9 +189,34 @@ void test_inv()
     cout << m.inv();
 }
 
+void test_readme()
+{
+    Matd a{{1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}};
+    cout << a;
+    wj::Mat<int> b(3, 4);
+    auto c = Matd::eye(3);
+
+    Matd d = a + a;
+    cout << d;
+
+    Matd e = 2 + a;
+    cout << e;
+    Matd f = c * a;
+    cout << f;
+
+    Matd g = a.dot_product(d);
+    cout << g;
+}
+
 int main()
 {
-    test_inv();
+    Matd m{{1, 2, 0},
+        {3, 4, 4},
+        {5, 6, 3}};
+    cout << m.trans();
+    cout << m.inv();
     
     return 0;
 }

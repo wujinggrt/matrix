@@ -577,6 +577,7 @@ namespace wj
 }
 
 using Matd = wj::Mat<double>;
+using Matf = wj::Mat<float>;
 using Mati = wj::Mat<int>;
 
 #endif
