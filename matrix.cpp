@@ -80,9 +80,11 @@ void test_double()
     cout << "2 / m:\n";
     b.print();
     cout << m << '\n';
+    cout << m.trans() << endl;
 
     string s = to_string(m);
     cout << s << endl;
+
 }
 
 int main()

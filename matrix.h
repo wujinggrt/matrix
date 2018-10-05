@@ -241,6 +241,21 @@ namespace wj
         {
             std::cout << typeid(T).name() << '\n'; 
         }
+
+        Mat<T> trans() const 
+        {
+            Mat<T> ret(col_size(), row_size());
+            for (int i = 0; i < row_size(); ++i)
+            {
+                for (int j = 0; j < col_size(); ++j)
+                {
+                    ret[j][i] = vec_[i][j];
+                }
+            }
+            return ret;
+        }
+
+        Mat<T> inv() const;
     };
 
 /*************************************************************
