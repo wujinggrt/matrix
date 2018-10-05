@@ -43,6 +43,9 @@ namespace wj
     template<typename T>
     ostream& operator<<(ostream& os, const Mat<T> &m);
 
+    template<typename T>
+    std::string to_string(const Mat<T> &m);
+
 /*************************************************************
  * Binary operator overload declaration
  * end
@@ -73,7 +76,7 @@ namespace wj
         friend Mat<T> operator/<>(const Mat<T> &m, double n);
 
         friend ostream& operator<<<>(ostream& os, const Mat<T> &m);
-
+        friend std::string to_string<>(const Mat<T> &m);
     public:
         Mat(std::initializer_list<std::vector<T>> ls)
             : vec_{ls}
@@ -141,8 +144,8 @@ namespace wj
     if (row_size() != other.row_size() || col_size() != other.col_size()) \
     { \
         throw invalid_argument(std::string("incompatible dimensions\n") +  \
-            "right-matrix rows, cols:" + to_string(row_size()) + ", " + to_string(col_size()) + \
-            "\nleft-matrx rows, cols:" + to_string(other.row_size()) + ", " + to_string(other.col_size()) \
+            "right-matrix rows, cols:" + std::to_string(row_size()) + ", " + std::to_string(col_size()) + \
+            "\nleft-matrx rows, cols:" + std::to_string(other.row_size()) + ", " + std::to_string(other.col_size()) \
             ); \
     }
 
@@ -182,8 +185,8 @@ namespace wj
             if (col_size() != other.row_size())
             {
                 throw invalid_argument(std::string("incompatible dimensions\n") + 
-                    "right-matrix rows, cols:" + to_string(row_size()) + ", " + to_string(col_size()) +
-                    "\nleft-matrx rows, cols:" + to_string(other.row_size()) + ", " + to_string(other.col_size())
+                    "right-matrix rows, cols:" + std::to_string(row_size()) + ", " + std::to_string(col_size()) +
+                    "\nleft-matrx rows, cols:" + std::to_string(other.row_size()) + ", " + std::to_string(other.col_size())
                     );
             }
 
@@ -337,6 +340,24 @@ namespace wj
         }
         os << "]\n";
         return os;
+    }
+
+    template<typename T>
+    std::string to_string(const Mat<T> &m)
+    {
+        std::string ret;
+        ret += "[";
+        for (int i = 0; i < m.row_size(); ++i)
+        {
+            ret += (i == 0 ? "" : " ") + std::string("[ ");
+            for (int j = 0; j < m.col_size(); ++j)
+            {
+                ret += std::to_string(m.vec_[i][j]) + std::string(", ");
+            }
+            ret += "]" + std::string(i == m.row_size() - 1 ? "" : "\n");
+        }
+        ret += "]\n";
+        return ret;
     }
 /*************************************************************
  * binary operator overload implementation

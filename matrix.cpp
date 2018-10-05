@@ -19,7 +19,7 @@ void print_test(initializer_list<initializer_list<T>> ls)
 
 void test()
 {
-        wj::Mat<int> m{{1}, {2}, {3}};
+    wj::Mat<int> m{{1}, {2}, {3}};
     wj::Mat<int> mm{{1, 2, 3},
                 {4, 5, 6},
                 {7, 8, 9}};
@@ -80,6 +80,9 @@ void test_double()
     cout << "2 / m:\n";
     b.print();
     cout << m << '\n';
+
+    string s = to_string(m);
+    cout << s << endl;
 }
 
 int main()
