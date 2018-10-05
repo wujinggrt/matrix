@@ -49,6 +49,13 @@ size:       3 x 3
 Matd cl = a.clone()
 ```
 
+#### 行列大小
+
+```C++
+std::size_t rows = a.row_size();
+std::size_t cols = a.col_size();
+```
+
 ### 加法
 
 如果矩阵之间的操作，行列不匹配则会抛出异常(invalid_argument)。
