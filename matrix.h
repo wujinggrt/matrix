@@ -14,10 +14,10 @@ namespace wj
     class Mat;
 
     template<typename T>
-    Mat<T> operator*(double n, const Mat<T> &m);
+    Mat<T> operator+(double n, const Mat<T> &m);
 
     template<typename T>
-    Mat<T> operator+(double n, const Mat<T> &m);
+    Mat<T> operator*(double n, const Mat<T> &m);
 
     template<typename T>
     class Mat
@@ -29,8 +29,8 @@ namespace wj
         using iterator = decltype(vec_.begin());
         // using iterator = typename std::vector<std::vector<T>>::iterator;
 
-        friend Mat<T> operator*<>(double n, const Mat<T> &m);
         friend Mat<T> operator+<>(double n, const Mat<T> &m);
+        friend Mat<T> operator*<>(double n, const Mat<T> &m);
         
     public:
         Mat(std::initializer_list<std::vector<T>> ls)
@@ -96,15 +96,15 @@ namespace wj
         }
 
 #define THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other) \
-    if (col_size() != other.row_size()) \
+    if (row_size() != other.row_size() || col_size() != other.col_size()) \
     { \
         throw invalid_argument(std::string("incompatible dimensions\n") +  \
-            "right-matrix cols:" + to_string(vec_[0].size()) + \
-            "left-matrx rows:" + to_string(other.vec_.size()) \
+            "right-matrix rows, cols:" + to_string(row_size()) + ", " + to_string(col_size()) + \
+            "\nleft-matrx rows, cols:" + to_string(other.row_size()) + ", " + to_string(other.col_size()) \
             ); \
     }
 
-        // 行、列不匹配则会抛出exception:invalid_argument
+        // +,-,*,/操作在行、列不匹配的时候则会抛出exception:invalid_argument
         Mat<T> operator+(const Mat<T> &other) const
         {
             THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
@@ -114,19 +114,36 @@ namespace wj
             {
                 for (int j = 0; j < other.col_size(); ++j)
                 {
-                    for (int k = 0; k < col_size(); ++k)
-                    {
-                        ret[i][j] = vec_[i][j] + other.vec_[i][j];
-                    }
+                    ret[i][j] = vec_[i][j] + other.vec_[i][j];
                 }
             }
             return ret;
         }
 
-        // 行、列不匹配则会抛出exception:invalid_argument
-        Mat<T> operator*(const Mat<T> &other) const
+        Mat<T> operator-(const Mat<T> &other) const
         {
             THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
+
+            Mat<T> ret(row_size(), other.col_size());
+            for (int i = 0; i < row_size(); ++i)
+            {
+                for (int j = 0; j < other.col_size(); ++j)
+                {
+                    ret[i][j] = vec_[i][j] - other.vec_[i][j];
+                }
+            }
+            return ret;
+        }
+
+        Mat<T> operator*(const Mat<T> &other) const
+        {
+            if (col_size() != other.row_size())
+            {
+                throw invalid_argument(std::string("incompatible dimensions\n") + 
+                    "right-matrix rows, cols:" + to_string(row_size()) + ", " + to_string(col_size()) +
+                    "\nleft-matrx rows, cols:" + to_string(other.row_size()) + ", " + to_string(other.col_size())
+                    );
+            }
 
             Mat<T> ret(vec_.size(), other.vec_[0].size());
             // this rows
@@ -140,6 +157,23 @@ namespace wj
                     {
                         ret[i][j] += vec_[i][k] * other.vec_[k][j];
                     }
+                }
+            }
+            return ret;
+        }
+
+        Mat<T> operator/(const Mat<T> &other) const
+        {
+            THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other);
+
+            Mat<T> ret(vec_.size(), other.vec_[0].size());
+            // this rows
+            for (int i = 0; i < vec_.size(); ++i)
+            {
+                // other cols
+                for (int j = 0; j < other.vec_[0].size(); ++j)
+                {
+                    ret[i][j] = vec_[i][j] / other.vec_[i][j];
                 }
             }
             return ret;

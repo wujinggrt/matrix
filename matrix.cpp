@@ -24,12 +24,26 @@ int main()
                 {4, 5, 6},
                 {7, 8, 9}};
     auto mmm = mm * m;
+    cout << "*:\n";
     mmm.print();
     auto a = 5.0 * mm;
     auto b = mm * 5.0;
-    b.print();
+    cout << "a:\n";
+    a.print();
     auto c = a + b;
+    cout << "+:c:\n";
     c.print();
 
+    auto d = c - a;
+    cout << "-:\n";
+    d.print();
+
+    auto e = c / a;
+    cout << "/:\n";
+    e.print();
+
+    auto f = c - m;
+    c.print();
+    
     return 0;
 }
