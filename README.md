@@ -11,6 +11,12 @@
 
 矩阵的基础类型为```wj::Mat<T>```, ```T```为```double, float, int```，分别对于类型```Matd, Matf, Mati```。
 
+```C++
+using Matd = wj::Mat<double>;
+using Matf = wj::Mat<float>;
+using Mati = wj::Mat<int>;
+```
+
 #### 1.1 构造函数
 
 ```C++
