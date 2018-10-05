@@ -301,29 +301,41 @@ namespace wj
             Mat<T> l(row_size(), col_size());
             Mat<T> u(row_size(), col_size());
             Mat<T> pi = get<0>(r);
-            Mat<T> b = Mat<T>::eye(row_size());
-            for (int i = 0; i < row_size(); ++i)
+            Mat<T> I = Mat<T>::eye(row_size());
+            for (int k = 0; k < row_size(); ++k)
             {
-                for (int j = 0; j < l.col_size(); ++j)
+                Mat<T> b(row_size(), 1);
+                for (int i = 0; i < row_size(); ++i)
                 {
-                    if (i == j)
+                    b[i][0] = I[i][k];
+                }
+                for (int i = 0; i < row_size(); ++i)
+                {
+                    for (int j = 0; j < l.col_size(); ++j)
                     {
-                        l[i][j] = 1.;
-                        u[i][j] = get<1>(r)[i][j];
-                    }
-                    else if (i < j)
-                    {
-                        u[i][j] = get<1>(r)[i][j];
-                    }
-                    else
-                    {
-                        l[i][j] = get<1>(r)[i][j];
+                        if (i == j)
+                        {
+                            l[i][j] = 1.;
+                            u[i][j] = get<1>(r)[i][j];
+                        }
+                        else if (i < j)
+                        {
+                            u[i][j] = get<1>(r)[i][j];
+                        }
+                        else
+                        {
+                            l[i][j] = get<1>(r)[i][j];
+                        }
                     }
                 }
+                auto x = wj::LUP_solve(l, u, pi, b);
+                for (int i = 0; i < row_size(); ++i)
+                {
+                    ret[i][k] = x[i][0];
+                }
             }
-            auto x = wj::LUP_solve(l, u, pi, b);
             
-            return x;
+            return ret;
         }
     };
 
