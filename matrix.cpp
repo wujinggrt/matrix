@@ -84,12 +84,114 @@ void test_double()
 
     string s = to_string(m);
     cout << s << endl;
+}
 
+void test_lu()
+{
+    wj::Mat<double> m{{2, 3, 1, 5},
+                    {6, 13, 5, 19},
+                    {2, 19, 10, 23},
+                    {4, 10, 11, 31}};
+    auto rr = wj::LUP_decomposition(m);
+    cout << get<0>(rr) << get<1>(rr);
+    
+    auto r = wj::LU_decomposition(m);
+    cout << get<0>(r);
+    cout << get<1>(r);
+
+
+}
+
+void test_lup()
+{
+    
+    wj::Mat<double> mm{{2, 0, 2, 0.6},
+                        {3, 3, 4, -2},
+                        {5, 5, 4, 2},
+                        {-1, -2, 3.4, -1}};
+    auto rr = wj::LUP_decomposition(mm);
+    cout << get<0>(rr);
+    cout << get<1>(rr);
+}
+
+void test_sln()
+{
+    wj::Mat<double> a{{1, 2, 0},
+                      {3, 4, 4},
+                      {5, 6, 3}};
+    wj::Mat<double> b{{3}, {7}, {8}};
+    auto r = wj::LUP_decomposition(a);
+    cout << get<0>(r) << get<1>(r);
+    Matd l(a.row_size(), a.col_size());
+    Matd u(a.row_size(), a.col_size());
+    Matd pi = get<0>(r);
+    for (int i = 0; i < a.row_size(); ++i)
+    {
+        for (int j = 0; j < l.col_size(); ++j)
+        {
+            if (i == j)
+            {
+                l[i][j] = 1.;
+                u[i][j] = get<1>(r)[i][j];
+            }
+            else if (i < j)
+            {
+                u[i][j] = get<1>(r)[i][j];
+            }
+            else
+            {
+                l[i][j] = get<1>(r)[i][j];
+            }
+        }
+    }
+    auto x = wj::LUP_solve(l, u, pi, b);
+    cout << l << u << x;
+/*
+matrix:
+value_type: d
+size:       3 x 1
+[[2]
+ [0]
+ [1]]
+matrix:
+value_type: d
+size:       3 x 3
+[[5, 6, 3]
+ [0.2, 0.8, -0.6]
+ [0.6, 0.5, 2.5]]
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 0, 0]
+ [0.2, 1, 0]
+ [0.6, 0.5, 1]]
+matrix:
+value_type: d
+size:       3 x 3
+[[5, 6, 3]
+ [0, 0.8, -0.6]
+ [0, 0, 2.5]]
+matrix:
+value_type: d
+size:       3 x 1
+[[-1.4]
+ [2.2]
+ [0.6]]
+ */
+}
+
+void test_inv()
+{
+    cout << wj::Mat<int>::eye(1);
+    Matd m{{1, 2, 0},
+          {3, 4, 4},
+          {5, 6, 3}};
+    cout << m.inv();
 }
 
 int main()
 {
-    test_double();
+    test_inv();
     
     return 0;
 }

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <initializer_list>
 #include <stdexcept>
+#include <tuple>
+#include <cmath>
 
 namespace wj
 {
@@ -51,6 +53,15 @@ namespace wj
  * end
 *************************************************************/
 
+    template<typename T>
+    std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T> &m);
+    
+    template<typename T>
+    std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T> &m);
+
+    template<typename T>
+    Mat<T> LUP_solve(Mat<T> &l, Mat<T> &u, Mat<T> &pi, Mat<T> &b);
+
 /*************************************************************
  * template class: Mat
 *************************************************************/
@@ -77,6 +88,10 @@ namespace wj
 
         friend ostream& operator<<<>(ostream& os, const Mat<T> &m);
         friend std::string to_string<>(const Mat<T> &m);
+
+        friend std::tuple<Mat<T>, Mat<T>> LU_decomposition<>(const Mat<T> &m);
+        friend std::tuple<Mat<T>, Mat<T>> LUP_decomposition<>(const Mat<T> &m);
+
     public:
         Mat(std::initializer_list<std::vector<T>> ls)
             : vec_{ls}
@@ -95,6 +110,16 @@ namespace wj
             {
                 vec_.push_back(std::vector<T>(cols));
             }
+        }
+
+        static Mat<T> eye(std::size_t row)
+        {
+            Mat<T> ret(row, row);
+            for (int i = 0; i < row; ++i)
+            {
+                ret[i][i] = 1;
+            }
+            return ret;
         }
 
         void print() const
@@ -255,7 +280,51 @@ namespace wj
             return ret;
         }
 
-        Mat<T> inv() const;
+        Mat<T> clone() const
+        {
+            Mat<T> ret(row_size(), col_size());
+            for (int i = 0; i < row_size(); ++i)
+            {
+                for (int j = 0; j < col_size(); ++j)
+                {
+                    ret.vec_[i][j] = vec_[i][j];
+                }
+            }
+
+            return ret;
+        }
+
+        Mat<T> inv() const
+        {
+            Mat<T> ret(row_size(), row_size());
+            auto r = LUP_decomposition(*this);
+            Mat<T> l(row_size(), col_size());
+            Mat<T> u(row_size(), col_size());
+            Mat<T> pi = get<0>(r);
+            Mat<T> b = Mat<T>::eye(row_size());
+            for (int i = 0; i < row_size(); ++i)
+            {
+                for (int j = 0; j < l.col_size(); ++j)
+                {
+                    if (i == j)
+                    {
+                        l[i][j] = 1.;
+                        u[i][j] = get<1>(r)[i][j];
+                    }
+                    else if (i < j)
+                    {
+                        u[i][j] = get<1>(r)[i][j];
+                    }
+                    else
+                    {
+                        l[i][j] = get<1>(r)[i][j];
+                    }
+                }
+            }
+            auto x = wj::LUP_solve(l, u, pi, b);
+            
+            return x;
+        }
     };
 
 /*************************************************************
@@ -346,10 +415,10 @@ namespace wj
         os << "[";
         for (int i = 0; i < m.row_size(); ++i)
         {
-            os << (i == 0 ? "" : " ") << "[ ";
+            os << (i == 0 ? "" : " ") << "[";
             for (int j = 0; j < m.col_size(); ++j)
             {
-                os << m.vec_[i][j] << ", ";
+                os << m.vec_[i][j] << (j == m.col_size() - 1 ? "" : ", ");
             }
             os << "]" << (i == m.row_size() - 1 ? "" : "\n");
         }
@@ -379,6 +448,123 @@ namespace wj
  * end
 *************************************************************/
 
+    template<typename T>
+    std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T> &m)
+    {
+        auto a = m.clone();
+        auto n = a.row_size();
+        Mat<T> l(a.row_size(), a.col_size());
+        Mat<T> u(a.row_size(), a.col_size());
+        for (int i = 0; i < l.row_size(); ++i)
+        {
+            for (int j = 0; j < l.col_size(); ++j)
+            {
+                if (i == j)
+                {
+                    l[i][j] = 1;
+                }
+            }
+        }
+
+        for (int k = 0; k < n; ++k)
+        {
+            u[k][k] = a[k][k];
+            for (int i = k + 1; i < n; ++i)
+            {
+                // col-vector
+                l[i][k] = a[i][k] / u[k][k];
+                // row-vector
+                u[k][i] = a[k][i];
+            }
+            for (int i = k + 1; i < n; ++i)
+            {
+                for (int j = k + 1; j < n; ++j)
+                {
+                    a[i][j] = a[i][j] - l[i][k] * u[k][j];
+                }
+            }
+        }
+        return std::make_tuple(l, u);
+    }
+
+    // 奇异矩阵的话会抛出exception:invalid_argument
+    template<typename T>
+    std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T> &m)
+    {
+        auto a = m.clone();
+        auto n = a.row_size();
+        Mat<T> pi(m.row_size(), 1);
+        for (int i = 0; i < pi.row_size(); ++i)
+        {
+            pi[i][0] = static_cast<T>(i);
+        }
+        for (int k = 0; k < n; ++k)
+        {
+            auto p = 0.;
+            auto k2 = k;
+            // find the max absolute value.
+            for (int i = k; i < n; ++i)
+            {
+                if (std::abs(a[i][k]) > p)
+                {
+                    p = abs(a[i][k]);
+                    k2 = i;
+                }
+            }
+            if (p == 0.)
+            {
+                throw invalid_argument("singular matrix");
+            }
+            swap(pi[k][0], pi[k2][0]);
+            // swap rows
+            for (int i = 0; i < n; ++i)
+            {
+                swap(a.vec_[k][i], a.vec_[k2][i]);
+            }
+            for (int i = k + 1; i < n; ++i)
+            {
+                // col-vector
+                a.vec_[i][k] = a.vec_[i][k] / a.vec_[k][k];
+                for (int j = k + 1; j < n; ++j)
+                {
+                    a.vec_[i][j] = a.vec_[i][j] - a.vec_[i][k] * a.vec_[k][j];
+                }
+            }
+        }
+
+        return std::make_tuple(pi, a);
+    }
+
+    template<typename T>
+    Mat<T> LUP_solve(Mat<T> &l, Mat<T> &u, Mat<T> &pi, Mat<T> &b)
+    {
+        auto n = l.row_size();
+        Mat<T> x(n, 1);
+        Mat<T> y(n, 1);
+        for (int i = 0; i < n; ++i)
+        {
+            auto sum = 0.;
+            for (int j = 0; j < i; ++j)
+            {
+                sum += l[i][j] * y[j][0];
+            }
+            y[i][0] = b[pi[i][0]][0] - sum;
+        }
+        for (int i = n - 1; i >= 0; --i)
+        {
+            auto sum = 0.;
+            for (int j = i + 1; j < n; ++j)
+            {
+                sum += u[i][j] * x[j][0];
+            }
+            x[i][0] = (y[i][0] - sum) / u[i][i];
+        }
+        return x;
+    }
+
 }
+
+using Matd = wj::Mat<double>;
+using Mati = wj::Mat<int>;
 
 #endif
