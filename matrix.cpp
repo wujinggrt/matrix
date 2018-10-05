@@ -79,6 +79,7 @@ void test_double()
     auto b = 2 / m;
     cout << "2 / m:\n";
     b.print();
+    cout << m << '\n';
 }
 
 int main()

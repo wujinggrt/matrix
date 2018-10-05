@@ -13,6 +13,9 @@ namespace wj
     template<typename T = float>
     class Mat;
 
+/*************************************************************
+ * Binary operator overload declaration
+*************************************************************/
     template<typename T>
     Mat<T> operator+(double n, const Mat<T> &m);
 
@@ -40,6 +43,14 @@ namespace wj
     template<typename T>
     ostream& operator<<(ostream& os, const Mat<T> &m);
 
+/*************************************************************
+ * Binary operator overload declaration
+ * end
+*************************************************************/
+
+/*************************************************************
+ * template class: Mat
+*************************************************************/
     template<typename T>
     class Mat
     {
@@ -48,6 +59,7 @@ namespace wj
 
     public:
         using iterator = decltype(vec_.begin());
+        using value_type = T;
         // using iterator = typename std::vector<std::vector<T>>::iterator;
 
         friend Mat<T> operator+<>(double n, const Mat<T> &m);
@@ -61,7 +73,7 @@ namespace wj
         friend Mat<T> operator/<>(const Mat<T> &m, double n);
 
         friend ostream& operator<<<>(ostream& os, const Mat<T> &m);
-        
+
     public:
         Mat(std::initializer_list<std::vector<T>> ls)
             : vec_{ls}
@@ -222,8 +234,21 @@ namespace wj
             return ret;
         }
 
+        void print_type() const
+        {
+            std::cout << typeid(T).name() << '\n'; 
+        }
     };
 
+/*************************************************************
+ * template class: Mat
+ * end
+*************************************************************/
+
+
+/*************************************************************
+ * binary operator overload implementation
+*************************************************************/
 #define BINARY_OPERATOR_OVERLOAD_RETURN(n, op, mat) \
     Mat<T> ret(mat.row_size(), mat.col_size()); \
     for (int i = 0; i < mat.row_size(); ++i) \
@@ -293,6 +318,30 @@ namespace wj
     {
         REVERSE_BINARY_OPERATOR_OVERLOAD_RETURN(m, /, n)
     }
+    
+    template<typename T>
+    ostream& operator<<(ostream& os, const Mat<T> &m)
+    {
+        os << "matrix:\nvalue_type: " << (typeid(typename Mat<T>::value_type).name()) 
+            << "\nsize:       " << m.row_size() << " x " << m.col_size() 
+            << '\n';
+        os << "[";
+        for (int i = 0; i < m.row_size(); ++i)
+        {
+            os << (i == 0 ? "" : " ") << "[ ";
+            for (int j = 0; j < m.col_size(); ++j)
+            {
+                os << m.vec_[i][j] << ", ";
+            }
+            os << "]" << (i == m.row_size() - 1 ? "" : "\n");
+        }
+        os << "]\n";
+        return os;
+    }
+/*************************************************************
+ * binary operator overload implementation
+ * end
+*************************************************************/
 
 }
 
