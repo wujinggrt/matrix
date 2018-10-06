@@ -212,7 +212,7 @@ void test_readme()
 
 int main()
 {
-    auto m = wj::Mat<double>::random(-100., 100., 5, 5);
+    auto m = wj::Mat<int>::random(-100., 100., 5, 5);
     cout << m;
     
     return 0;

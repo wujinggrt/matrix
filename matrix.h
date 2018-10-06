@@ -123,7 +123,7 @@ namespace wj
             return ret;
         }
 
-    static Mat<T> random(T low, T high, std::size_t row = 1, std::size_t col = 1)
+        static Mat<T> random(T low, T high, std::size_t row = 1, std::size_t col = 1)
         {
             Mat<T> ret(row, col);
             std::default_random_engine e;
