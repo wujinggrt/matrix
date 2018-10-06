@@ -210,10 +210,46 @@ void test_readme()
     cout << g;
 }
 
+void test_31()
+{
+    Matd L = {{1, 1}};
+    L = L.trans();
+    Matd mu_Y{{0}, 
+              {0}};
+    Matd D_Y{{2, 0}, 
+             {0, 2}};
+    Matd D_delta{{2, 0}, 
+                 {0, 2}};
+    Matd D_Y_delta{{0, -1}, 
+                   {0, 0}};
+    Matd B{{-1, -1},
+           {-1, 0}};
+    // D_YY * B.trans() + D_Y_delta
+    auto tmp1 = D_Y * B.trans() + D_Y_delta;
+    auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
+    auto tmp3 = tmp2.inv();
+    auto Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
+    cout << "tmp3(inverse):\n" << tmp3;
+    cout << "Y_hat :\n" << Y_hat;
+/*
+tmp3(inverse):
+matrix:
+value_type: d
+size:       2 x 2
+[[0.222222, -0.111111]
+ [-0.111111, 0.222222]]
+Y_hat :
+matrix:
+value_type: d
+size:       2 x 1
+[[-0.555556]
+ [-0.222222]]
+*/
+}
+
 int main()
 {
-    auto m = wj::Mat<int>::random(-100., 100., 5, 5);
-    cout << m;
+    test_31();
     
     return 0;
 }
