@@ -78,16 +78,16 @@ std::size_t rows = a.row_size();
 std::size_t cols = a.col_size();
 ```
 
-<h3 id="2.">2. 加法</h3>
-
-如果矩阵之间的操作，行列不匹配则会抛出异常(invalid_argument)。
-
 #### 下标索引
 
 ```C++
 // d 是第一行第二个元素
 double d = a[0][1];
 ```
+
+<h3 id="2.">2. 加法</h3>
+
+如果矩阵之间的操作，行列不匹配则会抛出异常(invalid_argument)。
 
 #### 2.1 矩阵之间加法
 
