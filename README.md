@@ -78,7 +78,7 @@ std::size_t rows = a.row_size();
 std::size_t cols = a.col_size();
 ```
 
-#### 下标索引
+#### 1.6 下标索引
 
 ```C++
 // d 是第一行第二个元素
