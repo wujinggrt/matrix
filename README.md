@@ -42,11 +42,13 @@ Matd a{{1, 2, 3},
 wj::Mat<int> b(3, 4);
 ```
 
+如果不想在每一个对象/函数前用```wj::```，可以在开头使用```using namespace wj;```
+
 #### 1.2 单位矩阵
 
 ```C++
 // c 是一个3x3的单位矩阵
-auto c = Matd::eye(3);
+Matd c = Matd::eye(3);
 ```
 
 #### 1.3 使用流进行(cout)输出
@@ -178,7 +180,7 @@ size:       3 x 3
 
 例子：</br>
 ```C++
-auto m = wj::Matd::random(-100., 100., 5, 5);
+Matd m = wj::Matd::random(-100., 100., 5, 5);
 cout << m;
 /*
 matrix:
@@ -191,7 +193,7 @@ size:       5 x 5
  [96.5101, 50.6712, -85.4628, 76.9414, -12.7177]]
  */
 
-auto mm = wj::Mat<int>::random(-100., 100., 5, 5);
+Matd mm = wj::Mat<int>::random(-100., 100., 5, 5);
 cout << mm;
 /*
 matrix:
@@ -221,10 +223,10 @@ Matd D_Y_delta{{0, -1},
 Matd B{{-1, -1},
         {-1, 0}};
 // D_YY * B.trans() + D_Y_delta
-auto tmp1 = D_Y * B.trans() + D_Y_delta;
-auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
-auto tmp3 = tmp2.inv();
-auto Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
+Matd tmp1 = D_Y * B.trans() + D_Y_delta;
+Matd tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
+Matd tmp3 = tmp2.inv();
+Matd Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
 cout << "tmp3(inverse):\n" << tmp3;
 cout << "Y_hat :\n" << Y_hat;
 /*
