@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <tuple>
 #include <cmath>
+#include <random>
 
 namespace wj
 {
@@ -119,6 +120,47 @@ namespace wj
             {
                 ret[i][i] = 1;
             }
+            return ret;
+        }
+
+    static Mat<T> random(T low, T high, std::size_t row = 1, std::size_t col = 1)
+        {
+            Mat<T> ret(row, col);
+            std::default_random_engine e;
+            if (typeid(T) == typeid(double))
+            {
+                std::uniform_real_distribution<double> ud(low, high);
+                for (int i = 0; i < row; ++i)
+                {
+                    for (int j = 0; j < col; ++j)
+                    {
+                        ret[i][j] = ud(e);
+                    }
+                }
+            }
+            if (typeid(T) == typeid(float))
+            {
+                std::uniform_real_distribution<float> uf(low, high);
+                for (int i = 0; i < row; ++i)
+                {
+                    for (int j = 0; j < col; ++j)
+                    {
+                        ret[i][j] = uf(e);
+                    }
+                }
+            }
+            if (typeid(T) == typeid(int))
+            {
+                std::uniform_int_distribution<int> ui(low, high);
+                for (int i = 0; i < row; ++i)
+                {
+                    for (int j = 0; j < col; ++j)
+                    {
+                        ret[i][j] = ui(e);
+                    }
+                }
+            }
+
             return ret;
         }
 

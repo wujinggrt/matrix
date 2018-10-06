@@ -212,11 +212,8 @@ void test_readme()
 
 int main()
 {
-    Matd m{{1, 2, 0},
-        {3, 4, 4},
-        {5, 6, 3}};
-    cout << m.trans();
-    cout << m.inv();
+    auto m = wj::Mat<double>::random(-100., 100., 5, 5);
+    cout << m;
     
     return 0;
 }
