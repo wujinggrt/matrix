@@ -19,7 +19,7 @@
 
 ## 使用方法
 
-在使用的CPP文件目录下，仿佛matrix.h文件，并且在使用的文件```#include "matrix.h"```
+在使用的CPP文件目录下， 拷贝matrix.h，在使用的cpp```#include "matrix.h"```
 
 <h3 id="1.">1. 基本类型</h3>
 
