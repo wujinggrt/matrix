@@ -35,14 +35,14 @@ using Mati = wj::Mat<int>;
 
 ```C++
 // 一个3x3的矩阵
-Matd a{{1, 2, 3},
+wj::Matd a{{1, 2, 3},
        {4, 5, 6},
        {7, 8, 9}};
 // 一个3x4的矩阵，默认为元素全为0的矩阵
 wj::Mat<int> b(3, 4);
 ```
 
-如果不想在每一个对象/函数前用```wj::```，可以在开头使用```using namespace wj;```
+如果不想在每一个对象/函数前用```wj::```，可以在```#include "matrix.h"```之后使用```using namespace wj;```。（以下例子默认使用using...）
 
 #### 1.2 单位矩阵
 

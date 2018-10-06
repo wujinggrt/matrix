@@ -618,15 +618,15 @@ namespace wj
         }
         return x;
     }
-
-}
 /*************************************************************
  * Solving linear system
  * end
 *************************************************************/
 
-using Matd = wj::Mat<double>;
-using Matf = wj::Mat<float>;
-using Mati = wj::Mat<int>;
+    using Matd = wj::Mat<double>;
+    using Matf = wj::Mat<float>;
+    using Mati = wj::Mat<int>;
+}
+
 
 #endif

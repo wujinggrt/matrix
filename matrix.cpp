@@ -1,7 +1,9 @@
 
-using namespace std;
 
 #include "matrix.h"
+using namespace std;
+
+using namespace wj;
 
 template<typename T>
 void print_test(initializer_list<initializer_list<T>> ls)
