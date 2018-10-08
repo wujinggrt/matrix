@@ -187,6 +187,16 @@ namespace wj
             return vec_[i];
         }
 
+                // throw range
+        const decltype(vec_[0])& operator[](std::size_t i) const
+        {
+            if (i >= vec_.size())
+            {
+                throw out_of_range("Mat:vec_:index out of range!");
+            }
+            return vec_[i];
+        }
+
         iterator begin()
         {
             vec_.begin();
