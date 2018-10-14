@@ -44,7 +44,7 @@ namespace wj
     Mat<T> operator/(const Mat<T> &m, double n);
 
     template<typename T>
-    ostream& operator<<(ostream& os, const Mat<T> &m);
+    std::ostream& operator<<(std::ostream& os, const Mat<T> &m);
 
     template<typename T>
     std::string to_string(const Mat<T> &m);
@@ -87,7 +87,7 @@ namespace wj
         friend Mat<T> operator*<>(const Mat<T> &m, double n);
         friend Mat<T> operator/<>(const Mat<T> &m, double n);
 
-        friend ostream& operator<<<>(ostream& os, const Mat<T> &m);
+        friend std::ostream& operator<<<>(std::ostream& os, const Mat<T> &m);
         friend std::string to_string<>(const Mat<T> &m);
 
         friend std::tuple<Mat<T>, Mat<T>> LU_decomposition<>(const Mat<T> &m);
@@ -104,7 +104,7 @@ namespace wj
         {
             if (!rows || !cols)
             {
-                throw invalid_argument("argument can't be 0!");
+                throw std::invalid_argument("argument can't be 0!");
             }
             vec_.reserve(rows);
             for (auto i = 0; i < rows; ++i)
@@ -182,7 +182,7 @@ namespace wj
         {
             if (i >= vec_.size())
             {
-                throw out_of_range("Mat:vec_:index out of range!");
+                throw std::out_of_range("Mat:vec_:index out of range!");
             }
             return vec_[i];
         }
@@ -192,7 +192,7 @@ namespace wj
         {
             if (i >= vec_.size())
             {
-                throw out_of_range("Mat:vec_:index out of range!");
+                throw std::out_of_range("Mat:vec_:index out of range!");
             }
             return vec_[i];
         }
@@ -220,7 +220,7 @@ namespace wj
 #define THROW_EXCEPTION_FOR_INCOMPATIBLE_MATRIX(other) \
     if (row_size() != other.row_size() || col_size() != other.col_size()) \
     { \
-        throw invalid_argument(std::string("incompatible dimensions\n") +  \
+        throw std::invalid_argument(std::string("incompatible dimensions\n") +  \
             "right-matrix rows, cols:" + std::to_string(row_size()) + ", " + std::to_string(col_size()) + \
             "\nleft-matrx rows, cols:" + std::to_string(other.row_size()) + ", " + std::to_string(other.col_size()) \
             ); \
@@ -261,7 +261,7 @@ namespace wj
         {
             if (col_size() != other.row_size())
             {
-                throw invalid_argument(std::string("incompatible dimensions\n") + 
+                throw std::invalid_argument(std::string("incompatible dimensions\n") + 
                     "right-matrix rows, cols:" + std::to_string(row_size()) + ", " + std::to_string(col_size()) +
                     "\nleft-matrx rows, cols:" + std::to_string(other.row_size()) + ", " + std::to_string(other.col_size())
                     );
@@ -352,7 +352,7 @@ namespace wj
             auto r = LUP_decomposition(*this);
             Mat<T> l(row_size(), col_size());
             Mat<T> u(row_size(), col_size());
-            Mat<T> pi = get<0>(r);
+            Mat<T> pi = std::get<0>(r);
             Mat<T> I = Mat<T>::eye(row_size());
             for (int k = 0; k < row_size(); ++k)
             {
@@ -368,15 +368,15 @@ namespace wj
                         if (i == j)
                         {
                             l[i][j] = 1.;
-                            u[i][j] = get<1>(r)[i][j];
+                            u[i][j] = std::get<1>(r)[i][j];
                         }
                         else if (i < j)
                         {
-                            u[i][j] = get<1>(r)[i][j];
+                            u[i][j] = std::get<1>(r)[i][j];
                         }
                         else
                         {
-                            l[i][j] = get<1>(r)[i][j];
+                            l[i][j] = std::get<1>(r)[i][j];
                         }
                     }
                 }
@@ -471,7 +471,7 @@ namespace wj
     }
     
     template<typename T>
-    ostream& operator<<(ostream& os, const Mat<T> &m)
+    std::ostream& operator<<(std::ostream& os, const Mat<T> &m)
     {
         os << "matrix:\nvalue_type: " << (typeid(typename Mat<T>::value_type).name()) 
             << "\nsize:       " << m.row_size() << " x " << m.col_size() 
@@ -574,19 +574,19 @@ namespace wj
             {
                 if (std::abs(a[i][k]) > p)
                 {
-                    p = abs(a[i][k]);
+                    p = std::abs(a[i][k]);
                     k2 = i;
                 }
             }
             if (p == 0.)
             {
-                throw invalid_argument("singular matrix");
+                throw std::invalid_argument("singular matrix");
             }
-            swap(pi[k][0], pi[k2][0]);
+            std::swap(pi[k][0], pi[k2][0]);
             // swap rows
             for (int i = 0; i < n; ++i)
             {
-                swap(a.vec_[k][i], a.vec_[k2][i]);
+                std::swap(a.vec_[k][i], a.vec_[k2][i]);
             }
             for (int i = k + 1; i < n; ++i)
             {
