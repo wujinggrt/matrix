@@ -1,8 +1,6 @@
 #include "unit_test.h"
 #include "../matrix.h"
 
-using namespace std;
-
 void test()
 {
     wj::Mat<int> m{{1}, {2}, {3}};
@@ -10,46 +8,46 @@ void test()
                 {4, 5, 6},
                 {7, 8, 9}};
     auto mmm = mm * m;
-    cout << "*:\n";
+    std::cout << "*:\n";
     mmm.print();
     auto a = 5.0 * mm;
     auto b = mm * 5.0;
-    cout << "a:\n";
+    std::cout << "a:\n";
     a.print();
     auto c = a + b + a;
-    cout << "+:c:\n";
+    std::cout << "+:c:\n";
     c.print();
 
     auto d = c - a;
-    cout << "-:\n";
+    std::cout << "-:\n";
     d.print();
 
     auto e = c / a;
-    cout << "/:\n";
+    std::cout << "/:\n";
     e.print();
 
     auto f = a.dot_product(e);
-    cout << "dot_product:\n";
+    std::cout << "dot_product:\n";
     f.print();
     
     auto g = 1000 + a;
-    cout << "g + a:\n";
+    std::cout << "g + a:\n";
     g.print();
 
     auto h = a + 1000;
-    cout << "a + 1000:\n";
+    std::cout << "a + 1000:\n";
     h.print();
 
     auto ii = h - 1000;
-    cout << "h - 1000:\n";
+    std::cout << "h - 1000:\n";
     ii.print();
 
     auto kk = a / 2;
-    cout << "a / 2:\n";
+    std::cout << "a / 2:\n";
     kk.print();
 
     auto l = 2 / a;
-    cout << "2 / a:\n";
+    std::cout << "2 / a:\n";
     l.print();
 }
 
@@ -59,17 +57,17 @@ TEST_CASE(TestMatrixOperand)
 }
 
 template<typename T>
-void print_test(initializer_list<initializer_list<T>> ls)
+void print_test(std::initializer_list<std::initializer_list<T>> ls)
 {
     for (auto e: ls)
     {
         for (auto ee: e)
         {
-            cout << ee << ' ';
+            std::cout << ee << ' ';
         }
-        cout << '\n';
+        std::cout << '\n';
     }
-    cout << '\n';
+    std::cout << '\n';
 }
 
 void test_double()
@@ -78,17 +76,17 @@ void test_double()
                 {4., 5., 6.},
                 {7., 8., 9.}};   
     auto a = 2 * m;
-    cout << "2 * a:\n ";
+    std::cout << "2 * a:\n ";
     a.print();
 
     auto b = 2 / m;
-    cout << "2 / m:\n";
+    std::cout << "2 / m:\n";
     b.print();
-    cout << m << '\n';
-    cout << m.trans() << endl;
+    std::cout << m << '\n';
+    std::cout << m.trans() << std::endl;
 
-    string s = to_string(m);
-    cout << s << endl;
+    std::string s = to_string(m);
+    std::cout << s << std::endl;
 }
 
 TEST_CASE(TestDoubleFormat)
@@ -103,11 +101,11 @@ void test_lu()
                     {2, 19, 10, 23},
                     {4, 10, 11, 31}};
     auto rr = wj::LUP_decomposition(m);
-    cout << get<0>(rr) << get<1>(rr);
+    std::cout << std::get<0>(rr) << std::get<1>(rr);
     
     auto r = wj::LU_decomposition(m);
-    cout << get<0>(r);
-    cout << get<1>(r);
+    std::cout << std::get<0>(r);
+    std::cout << std::get<1>(r);
 
 
 }
@@ -120,8 +118,8 @@ void test_lup()
                         {5, 5, 4, 2},
                         {-1, -2, 3.4, -1}};
     auto rr = wj::LUP_decomposition(mm);
-    cout << get<0>(rr);
-    cout << get<1>(rr);
+    std::cout << std::get<0>(rr);
+    std::cout << std::get<1>(rr);
 }
 
 void test_sln()
@@ -131,10 +129,10 @@ void test_sln()
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
     auto r = wj::LUP_decomposition(a);
-    cout << get<0>(r) << get<1>(r);
+    std::cout << std::get<0>(r) << std::get<1>(r);
     wj::Matd l(a.row_size(), a.col_size());
     wj::Matd u(a.row_size(), a.col_size());
-    wj::Matd pi = get<0>(r);
+    wj::Matd pi = std::get<0>(r);
     for (int i = 0; i < a.row_size(); ++i)
     {
         for (int j = 0; j < l.col_size(); ++j)
@@ -142,20 +140,20 @@ void test_sln()
             if (i == j)
             {
                 l[i][j] = 1.;
-                u[i][j] = get<1>(r)[i][j];
+                u[i][j] = std::get<1>(r)[i][j];
             }
             else if (i < j)
             {
-                u[i][j] = get<1>(r)[i][j];
+                u[i][j] = std::get<1>(r)[i][j];
             }
             else
             {
-                l[i][j] = get<1>(r)[i][j];
+                l[i][j] = std::get<1>(r)[i][j];
             }
         }
     }
     auto x = wj::LUP_solve(l, u, pi, b);
-    cout << l << u << x;
+    std::cout << l << u << x;
 /*
 matrix:
 value_type: d
@@ -192,11 +190,11 @@ size:       3 x 1
 
 void test_inv()
 {
-    cout << wj::Mat<int>::eye(1);
+    std::cout << wj::Mat<int>::eye(1);
     wj::Matd m{{1, 2, 0},
           {3, 4, 4},
           {5, 6, 3}};
-    cout << m.inv();
+    std::cout << m.inv();
 }
 
 void test_readme()
@@ -204,20 +202,20 @@ void test_readme()
     wj::Matd a{{1, 2, 3},
             {4, 5, 6},
             {7, 8, 9}};
-    cout << a;
+    std::cout << a;
     wj::Mat<int> b(3, 4);
     auto c = wj::Matd::eye(3);
 
     wj::Matd d = a + a;
-    cout << d;
+    std::cout << d;
 
     wj::Matd e = 2 + a;
-    cout << e;
+    std::cout << e;
     wj::Matd f = c * a;
-    cout << f;
+    std::cout << f;
 
     wj::Matd g = a.dot_product(d);
-    cout << g;
+    std::cout << g;
 }
 
 void test_31()
@@ -239,8 +237,8 @@ void test_31()
     auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
     auto tmp3 = tmp2.inv();
     auto Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
-    cout << "tmp3(inverse):\n" << tmp3;
-    cout << "Y_hat :\n" << Y_hat;
+    std::cout << "tmp3(inverse):\n" << tmp3;
+    std::cout << "Y_hat :\n" << Y_hat;
 /*
 tmp3(inverse):
 matrix:
