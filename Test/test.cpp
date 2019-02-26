@@ -4,7 +4,8 @@
 void test()
 {
     wj::Mat<int> m{{1}, {2}, {3}};
-    wj::Mat<int> mm{{1, 2, 3},
+    wj::Mat<int> mm{
+                {1, 2, 3},
                 {4, 5, 6},
                 {7, 8, 9}};
     auto mmm = mm * m;
@@ -51,7 +52,7 @@ void test()
     l.print();
 }
 
-TEST_CASE(TestMatrixOperand)
+TEST_CASE(TestMatrix)
 {
     test();
 }
@@ -76,7 +77,7 @@ void test_double()
                 {4., 5., 6.},
                 {7., 8., 9.}};   
     auto a = 2 * m;
-    std::cout << "2 * a:\n ";
+    std::cout << "2 * a:\n";
     a.print();
 
     auto b = 2 / m;
@@ -218,7 +219,7 @@ void test_readme()
     std::cout << g;
 }
 
-void test_31()
+void test_filter_in_geometric()
 {
     wj::Matd L = {{1, 1}};
     L = L.trans();
