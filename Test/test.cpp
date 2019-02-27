@@ -153,7 +153,7 @@ void test_sln()
             }
         }
     }
-    auto x = wj::LUP_solve(l, u, pi, b);
+    auto x = wj::lup_solve(l, u, pi, b);
     std::cout << l << u << x;
 /*
 matrix:

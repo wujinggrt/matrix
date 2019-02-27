@@ -255,3 +255,9 @@ size:       2 x 1
 ## 自己的一些疑问
 
 比如我包含的这个头文件，使用者也会被我牵连的包含。需要怎么避免呢？
+
+19-2-27
+
+完成部分重构，添加了
+1. operator()(size_t row_index, col_index)
+2. 完成binary_operation对宏替换为函数
