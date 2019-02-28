@@ -1,13 +1,12 @@
 #include "unit_test.h"
-#include "../matrix.h"
+#include "../matrix/matrix.h"
 
-void test()
-{
+void test() {
     wj::Mat<int> m{{1}, {2}, {3}};
     wj::Mat<int> mm{
-                {1, 2, 3},
-                {4, 5, 6},
-                {7, 8, 9}};
+                    {1, 2, 3},
+                    {4, 5, 6},
+                    {7, 8, 9}};
     auto mmm = mm * m;
     std::cout << "*:\n";
     mmm.print();
@@ -52,18 +51,14 @@ void test()
     l.print();
 }
 
-TEST_CASE(TestMatrix)
-{
+TEST_CASE(TestMatrix) {
     test();
 }
 
 template<typename T>
-void print_test(std::initializer_list<std::initializer_list<T>> ls)
-{
-    for (auto e: ls)
-    {
-        for (auto ee: e)
-        {
+void print_test(std::initializer_list<std::initializer_list<T>> ls) {
+    for (auto e: ls) {
+        for (auto ee: e) {
             std::cout << ee << ' ';
         }
         std::cout << '\n';
@@ -71,11 +66,11 @@ void print_test(std::initializer_list<std::initializer_list<T>> ls)
     std::cout << '\n';
 }
 
-void test_double()
-{
-    wj::Mat<double> m{{1., 2., 3.},
-                {4., 5., 6.},
-                {7., 8., 9.}};   
+void test_double() {
+    wj::Mat<double> m{
+                      {1., 2., 3.},
+                      {4., 5., 6.},
+                      {7., 8., 9.}};   
     auto a = 2 * m;
     std::cout << "2 * a:\n";
     a.print();
@@ -90,17 +85,16 @@ void test_double()
     std::cout << s << std::endl;
 }
 
-TEST_CASE(TestDoubleFormat)
-{
+TEST_CASE(TestDoubleFormat) {
     test_double();
 }
 
-void test_lu()
-{
-    wj::Mat<double> m{{2, 3, 1, 5},
-                    {6, 13, 5, 19},
-                    {2, 19, 10, 23},
-                    {4, 10, 11, 31}};
+void test_lu() {
+    wj::Mat<double> m{
+                      {2, 3, 1, 5},
+                      {6, 13, 5, 19},
+                      {2, 19, 10, 23},
+                      {4, 10, 11, 31}};
     auto rr = wj::LUP_decomposition(m);
     std::cout << std::get<0>(rr) << std::get<1>(rr);
     
@@ -111,21 +105,20 @@ void test_lu()
 
 }
 
-void test_lup()
-{
-    
-    wj::Mat<double> mm{{2, 0, 2, 0.6},
-                        {3, 3, 4, -2},
-                        {5, 5, 4, 2},
-                        {-1, -2, 3.4, -1}};
+void test_lup() {
+    wj::Mat<double> mm{
+                       {2, 0, 2, 0.6},
+                       {3, 3, 4, -2},
+                       {5, 5, 4, 2},
+                       {-1, -2, 3.4, -1}};
     auto rr = wj::LUP_decomposition(mm);
     std::cout << std::get<0>(rr);
     std::cout << std::get<1>(rr);
 }
 
-void test_sln()
-{
-    wj::Mat<double> a{{1, 2, 0},
+void test_sln() {
+    wj::Mat<double> a{
+                      {1, 2, 0},
                       {3, 4, 4},
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
@@ -134,21 +127,14 @@ void test_sln()
     wj::Matd l(a.row_size(), a.col_size());
     wj::Matd u(a.row_size(), a.col_size());
     wj::Matd pi = std::get<0>(r);
-    for (int i = 0; i < a.row_size(); ++i)
-    {
-        for (int j = 0; j < l.col_size(); ++j)
-        {
-            if (i == j)
-            {
+    for (int i = 0; i < a.row_size(); ++i) {
+        for (int j = 0; j < l.col_size(); ++j) {
+            if (i == j) {
                 l[i][j] = 1.;
                 u[i][j] = std::get<1>(r)[i][j];
-            }
-            else if (i < j)
-            {
+            } else if (i < j) {
                 u[i][j] = std::get<1>(r)[i][j];
-            }
-            else
-            {
+            } else {
                 l[i][j] = std::get<1>(r)[i][j];
             }
         }
@@ -189,20 +175,20 @@ size:       3 x 1
  */
 }
 
-void test_inv()
-{
+void test_inv() {
     std::cout << wj::Mat<int>::eye(1);
-    wj::Matd m{{1, 2, 0},
-          {3, 4, 4},
-          {5, 6, 3}};
+    wj::Matd m{
+               {1, 2, 0},
+               {3, 4, 4},
+               {5, 6, 3}};
     std::cout << m.inv();
 }
 
-void test_readme()
-{
-    wj::Matd a{{1, 2, 3},
-            {4, 5, 6},
-            {7, 8, 9}};
+void test_readme() {
+    wj::Matd a{
+               {1, 2, 3},
+               {4, 5, 6},
+               {7, 8, 9}};
     std::cout << a;
     wj::Mat<int> b(3, 4);
     auto c = wj::Matd::eye(3);
@@ -219,20 +205,22 @@ void test_readme()
     std::cout << g;
 }
 
-void test_filter_in_geometric()
-{
+void test_filter_in_geometric() {
     wj::Matd L = {{1, 1}};
     L = L.trans();
-    wj::Matd mu_Y{{0}, 
-              {0}};
-    wj::Matd D_Y{{2, 0}, 
-             {0, 2}};
-    wj::Matd D_delta{{2, 0}, 
+    wj::Matd mu_Y{{0}, {0}};
+    wj::Matd D_Y{
+                 {2, 0}, 
                  {0, 2}};
-    wj::Matd D_Y_delta{{0, -1}, 
-                   {0, 0}};
-    wj::Matd B{{-1, -1},
-           {-1, 0}};
+    wj::Matd D_delta{
+                     {2, 0}, 
+                     {0, 2}};
+    wj::Matd D_Y_delta{
+                       {0, -1}, 
+                       {0, 0}};
+    wj::Matd B{
+               {-1, -1},
+               {-1, 0}};
     // D_YY * B.trans() + D_Y_delta
     auto tmp1 = D_Y * B.trans() + D_Y_delta;
     auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();

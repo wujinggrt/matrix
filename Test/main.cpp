@@ -1,6 +1,5 @@
 #include "unit_test.h"
 
-int main()
-{
+int main() {
     return 0;
 }

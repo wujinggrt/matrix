@@ -324,7 +324,7 @@ Mat<MatValueType> do_binary_operate(
                                     BinaryOperation op,
                                     std::enable_if_t<
                                         std::is_arithmetic_v<NumType>
-                                        >* = nullptr) {
+                                        >* = nullptr) { 
     Mat<MatValueType> ret(src.row_size(), src.col_size());
     MatValueType casted_num = static_cast<MatValueType>(num);
     for (std::size_t i = 0; i < src.row_size(); ++i) {
