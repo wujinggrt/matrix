@@ -438,37 +438,28 @@ std::string to_string(const Mat<T>& mat) {
  * Solving linear system
 *************************************************************/
 template<typename T>
-std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T> &m)
-{
-    auto a = m.clone();
+std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T>& mat) {
+    auto a = mat.clone();
     auto n = a.row_size();
     Mat<T> l(a.row_size(), a.col_size());
     Mat<T> u(a.row_size(), a.col_size());
-    for (int i = 0; i < l.row_size(); ++i)
-    {
-        for (int j = 0; j < l.col_size(); ++j)
-        {
-            if (i == j)
-            {
+    for (int i = 0; i < l.row_size(); ++i) {
+        for (int j = 0; j < l.col_size(); ++j) {
+            if (i == j) {
                 l[i][j] = 1;
             }
         }
     }
-
-    for (int k = 0; k < n; ++k)
-    {
+    for (int k = 0; k < n; ++k) {
         u[k][k] = a[k][k];
-        for (int i = k + 1; i < n; ++i)
-        {
+        for (int i = k + 1; i < n; ++i) {
             // col-vector
             l[i][k] = a[i][k] / u[k][k];
             // row-vector
             u[k][i] = a[k][i];
         }
-        for (int i = k + 1; i < n; ++i)
-        {
-            for (int j = k + 1; j < n; ++j)
-            {
+        for (int i = k + 1; i < n; ++i) {
+            for (int j = k + 1; j < n; ++j) {
                 a[i][j] = a[i][j] - l[i][k] * u[k][j];
             }
         }
@@ -478,44 +469,35 @@ std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T> &m)
 
 // 奇异矩阵的话会抛出exception:invalid_argument
 template<typename T>
-std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T> &m)
-{
-    auto a = m.clone();
+std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T>& mat) {
+    auto a = mat.clone();
     auto n = a.row_size();
-    Mat<T> pi(m.row_size(), 1);
-    for (int i = 0; i < pi.row_size(); ++i)
-    {
+    Mat<T> pi(mat.row_size(), 1);
+    for (int i = 0; i < pi.row_size(); ++i) {
         pi[i][0] = static_cast<T>(i);
     }
-    for (int k = 0; k < n; ++k)
-    {
+    for (int k = 0; k < n; ++k) {
         auto p = 0.;
         auto k2 = k;
         // find the max absolute value.
-        for (int i = k; i < n; ++i)
-        {
-            if (std::abs(a[i][k]) > p)
-            {
+        for (int i = k; i < n; ++i) {
+            if (std::abs(a[i][k]) > p) {
                 p = std::abs(a[i][k]);
                 k2 = i;
             }
         }
-        if (p == 0.)
-        {
+        if (p == 0.) {
             throw std::invalid_argument("singular matrix");
         }
         std::swap(pi[k][0], pi[k2][0]);
         // swap rows
-        for (int i = 0; i < n; ++i)
-        {
+        for (int i = 0; i < n; ++i) {
             std::swap(a.vec_[k][i], a.vec_[k2][i]);
         }
-        for (int i = k + 1; i < n; ++i)
-        {
+        for (int i = k + 1; i < n; ++i) {
             // col-vector
             a.vec_[i][k] = a.vec_[i][k] / a.vec_[k][k];
-            for (int j = k + 1; j < n; ++j)
-            {
+            for (int j = k + 1; j < n; ++j) {
                 a.vec_[i][j] = a.vec_[i][j] - a.vec_[i][k] * a.vec_[k][j];
             }
         }
@@ -525,25 +507,20 @@ std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T> &m)
 }
 
 template<typename T>
-Mat<T> lup_solve(Mat<T> &l, Mat<T> &u, Mat<T> &pi, Mat<T> &b)
-{
+Mat<T> lup_solve(Mat<T>& l, Mat<T>& u, Mat<T>& pi, Mat<T>& b) {
     auto n = l.row_size();
     Mat<T> x(n, 1);
     Mat<T> y(n, 1);
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i) {
         auto sum = 0.;
-        for (int j = 0; j < i; ++j)
-        {
+        for (int j = 0; j < i; ++j) {
             sum += l[i][j] * y[j][0];
         }
         y[i][0] = b[pi[i][0]][0] - sum;
     }
-    for (int i = n - 1; i >= 0; --i)
-    {
+    for (int i = n - 1; i >= 0; --i) {
         auto sum = 0.;
-        for (int j = i + 1; j < n; ++j)
-        {
+        for (int j = i + 1; j < n; ++j) {
             sum += u[i][j] * x[j][0];
         }
         x[i][0] = (y[i][0] - sum) / u[i][i];
@@ -559,6 +536,5 @@ using Matd = wj::Mat<double>;
 using Matf = wj::Mat<float>;
 using Mati = wj::Mat<int>;
 }
-
 
 #endif

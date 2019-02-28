@@ -10,7 +10,7 @@ struct MyInt {
 };
 
 template<typename T>
-void foo(T& t, std::decay_t<decltype(++t)>* = nullptr) {
+void foo(T&& t, std::decay_t<decltype(++t)>* = nullptr) {
     ++t;
 }
 
