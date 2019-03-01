@@ -18,28 +18,28 @@ template<typename T = float>
 class Mat;
 
 /*************************************************************
- * Binary operator overload declaration
+ * Operation declaration
 *************************************************************/
 
-template<typename T>
-std::ostream& operator<<(std::ostream& os, const Mat<T>& mat);
+template<typename MatValueType>
+std::ostream& operator<<(std::ostream& os, const Mat<MatValueType>& mat);
 
-template<typename T>
-std::string to_string(const Mat<T>& mat);
+template<typename MatValueType>
+std::string to_string(const Mat<MatValueType>& mat);
 
 /*************************************************************
  * Binary operator overload declaration
  * end
 *************************************************************/
 
-template<typename T>
-std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T>& mat);
+template<typename MatValueType>
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> lu_decomposition(const Mat<MatValueType>& mat);
 
-template<typename T>
-std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T>& mat);
+template<typename MatValueType>
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> lup_decomposition(const Mat<MatValueType>& mat);
 
-template<typename T>
-Mat<T> lup_solve(Mat<T>& l, Mat<T>& u, Mat<T>& pi, Mat<T>& b);
+template<typename MatValueType>
+Mat<MatValueType> lup_solve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b);
 
 /*************************************************************
  * template class: Mat
@@ -55,11 +55,15 @@ public:
     using size_type = std::size_t;
     // using iterator = typename std::vector<std::vector<T>>::iterator;
 
-    friend std::ostream& operator<<<>(std::ostream& os, const Mat<T>& mat);
-    friend std::string to_string<>(const Mat<T>& mat);
+    template<typename MatValueType>
+    friend std::ostream& operator<<(std::ostream& os, const Mat<MatValueType>& mat);
+    template<typename MatValueType>
+    friend std::string to_string(const Mat<MatValueType>& mat);
 
-    friend std::tuple<Mat<T>, Mat<T>> LU_decomposition<>(const Mat<T>& mat);
-    friend std::tuple<Mat<T>, Mat<T>> LUP_decomposition<>(const Mat<T>& mat);
+    template<typename MatValueType>
+    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> lu_decomposition(const Mat<MatValueType>& mat);
+    template<typename MatValueType>
+    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> lup_decomposition(const Mat<MatValueType>& mat);
 
 public:
     Mat(std::initializer_list<std::vector<T>> ls)
@@ -117,7 +121,7 @@ public:
     }
 
     // throw range
-    decltype(vec_[0])& operator[](size_type i) {
+    std::vector<T>& operator[](size_type i) {
         if (i >= vec_.size()) {
             throw std::out_of_range("Mat:vec_:index out of range!");
         }
@@ -125,7 +129,7 @@ public:
     }
 
             // throw range
-    const decltype(vec_[0])& operator[](size_type i) const {
+    const std::vector<T>& operator[](size_type i) const {
         if (i >= vec_.size()) {
             throw std::out_of_range("Mat:vec_:index out of range!");
         }
@@ -253,7 +257,7 @@ public:
 
     Mat<T> inv() const {
         Mat<T> ret(row_size(), row_size());
-        auto r = LUP_decomposition(*this);
+        auto r = lup_decomposition(*this);
         Mat<T> l(row_size(), col_size());
         Mat<T> u(row_size(), col_size());
         Mat<T> pi = std::get<0>(r);
@@ -306,12 +310,6 @@ private:
 /*************************************************************
  * binary operator overload implementation
 *************************************************************/
-#define BINARY_OPERATOR_OVERLOAD_RETURN(n, op, mat) \
-    for (std::size_t i = 0; i < mat.row_size(); ++i) { \
-        for (std::size_t j = 0; j < mat.col_size(); ++j) { \
-            ret[i][j] = n op mat.vec_[i][j]; \
-        } \
-    }
 
 // To do
 // using SFINAE 来限制num必须是arithmetic 
@@ -437,12 +435,12 @@ std::string to_string(const Mat<T>& mat) {
 /*************************************************************
  * Solving linear system
 *************************************************************/
-template<typename T>
-std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T>& mat) {
+template<typename MatValueType>
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> lu_decomposition(const Mat<MatValueType>& mat) {
     auto a = mat.clone();
     auto n = a.row_size();
-    Mat<T> l(a.row_size(), a.col_size());
-    Mat<T> u(a.row_size(), a.col_size());
+    Mat<MatValueType> l(a.row_size(), a.col_size());
+    Mat<MatValueType> u(a.row_size(), a.col_size());
     for (int i = 0; i < l.row_size(); ++i) {
         for (int j = 0; j < l.col_size(); ++j) {
             if (i == j) {
@@ -468,13 +466,13 @@ std::tuple<Mat<T>, Mat<T>> LU_decomposition(const Mat<T>& mat) {
 }
 
 // 奇异矩阵的话会抛出exception:invalid_argument
-template<typename T>
-std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T>& mat) {
+template<typename MatValueType>
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> lup_decomposition(const Mat<MatValueType>& mat) {
     auto a = mat.clone();
     auto n = a.row_size();
-    Mat<T> pi(mat.row_size(), 1);
+    Mat<MatValueType> pi(mat.row_size(), 1);
     for (int i = 0; i < pi.row_size(); ++i) {
-        pi[i][0] = static_cast<T>(i);
+        pi[i][0] = static_cast<MatValueType>(i);
     }
     for (int k = 0; k < n; ++k) {
         auto p = 0.;
@@ -506,11 +504,11 @@ std::tuple<Mat<T>, Mat<T>> LUP_decomposition(const Mat<T>& mat) {
     return std::make_tuple(pi, a);
 }
 
-template<typename T>
-Mat<T> lup_solve(Mat<T>& l, Mat<T>& u, Mat<T>& pi, Mat<T>& b) {
+template<typename MatValueType>
+Mat<MatValueType> lup_solve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b) {
     auto n = l.row_size();
-    Mat<T> x(n, 1);
-    Mat<T> y(n, 1);
+    Mat<MatValueType> x(n, 1);
+    Mat<MatValueType> y(n, 1);
     for (int i = 0; i < n; ++i) {
         auto sum = 0.;
         for (int j = 0; j < i; ++j) {

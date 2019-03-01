@@ -95,10 +95,10 @@ void test_lu() {
                       {6, 13, 5, 19},
                       {2, 19, 10, 23},
                       {4, 10, 11, 31}};
-    auto rr = wj::LUP_decomposition(m);
+    auto rr = wj::lup_decomposition(m);
     std::cout << std::get<0>(rr) << std::get<1>(rr);
     
-    auto r = wj::LU_decomposition(m);
+    auto r = wj::lu_decomposition(m);
     std::cout << std::get<0>(r);
     std::cout << std::get<1>(r);
 
@@ -111,7 +111,7 @@ void test_lup() {
                        {3, 3, 4, -2},
                        {5, 5, 4, 2},
                        {-1, -2, 3.4, -1}};
-    auto rr = wj::LUP_decomposition(mm);
+    auto rr = wj::lup_decomposition(mm);
     std::cout << std::get<0>(rr);
     std::cout << std::get<1>(rr);
 }
@@ -122,7 +122,7 @@ void test_sln() {
                       {3, 4, 4},
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
-    auto r = wj::LUP_decomposition(a);
+    auto r = wj::lup_decomposition(a);
     std::cout << std::get<0>(r) << std::get<1>(r);
     wj::Matd l(a.row_size(), a.col_size());
     wj::Matd u(a.row_size(), a.col_size());
