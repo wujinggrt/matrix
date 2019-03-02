@@ -9,46 +9,46 @@ void test() {
                     {7, 8, 9}};
     auto mmm = mm * m;
     std::cout << "*:\n";
-    mmm.print();
+    mmm.Print();
     auto a = 5.0 * mm;
     auto b = mm * 5.0;
     std::cout << "a:\n";
-    a.print();
+    a.Print();
     auto c = a + b + a;
     std::cout << "+:c:\n";
-    c.print();
+    c.Print();
 
     auto d = c - a;
     std::cout << "-:\n";
-    d.print();
+    d.Print();
 
     auto e = c / a;
     std::cout << "/:\n";
-    e.print();
+    e.Print();
 
-    auto f = a.dot_product(e);
-    std::cout << "dot_product:\n";
-    f.print();
+    auto f = a.DotProduct(e);
+    std::cout << "DotProduct:\n";
+    f.Print();
     
     auto g = 1000 + a;
     std::cout << "g + a:\n";
-    g.print();
+    g.Print();
 
     auto h = a + 1000;
     std::cout << "a + 1000:\n";
-    h.print();
+    h.Print();
 
     auto ii = h - 1000;
     std::cout << "h - 1000:\n";
-    ii.print();
+    ii.Print();
 
     auto kk = a / 2;
     std::cout << "a / 2:\n";
-    kk.print();
+    kk.Print();
 
     auto l = 2 / a;
     std::cout << "2 / a:\n";
-    l.print();
+    l.Print();
 }
 
 TEST_CASE(TestMatrix) {
@@ -73,13 +73,13 @@ void test_double() {
                       {7., 8., 9.}};   
     auto a = 2 * m;
     std::cout << "2 * a:\n";
-    a.print();
+    a.Print();
 
     auto b = 2 / m;
     std::cout << "2 / m:\n";
-    b.print();
+    b.Print();
     std::cout << m << '\n';
-    std::cout << m.trans() << std::endl;
+    std::cout << m.Transpose() << std::endl;
 
     std::string s = to_string(m);
     std::cout << s << std::endl;
@@ -95,10 +95,10 @@ void test_lu() {
                       {6, 13, 5, 19},
                       {2, 19, 10, 23},
                       {4, 10, 11, 31}};
-    auto rr = wj::lup_decomposition(m);
+    auto rr = wj::LupDecomposition(m);
     std::cout << std::get<0>(rr) << std::get<1>(rr);
     
-    auto r = wj::lu_decomposition(m);
+    auto r = wj::LuDecomposition(m);
     std::cout << std::get<0>(r);
     std::cout << std::get<1>(r);
 
@@ -111,7 +111,7 @@ void test_lup() {
                        {3, 3, 4, -2},
                        {5, 5, 4, 2},
                        {-1, -2, 3.4, -1}};
-    auto rr = wj::lup_decomposition(mm);
+    auto rr = wj::LupDecomposition(mm);
     std::cout << std::get<0>(rr);
     std::cout << std::get<1>(rr);
 }
@@ -122,13 +122,13 @@ void test_sln() {
                       {3, 4, 4},
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
-    auto r = wj::lup_decomposition(a);
+    auto r = wj::LupDecomposition(a);
     std::cout << std::get<0>(r) << std::get<1>(r);
-    wj::Matd l(a.row_size(), a.col_size());
-    wj::Matd u(a.row_size(), a.col_size());
+    wj::Matd l(a.RowSize(), a.ColSize());
+    wj::Matd u(a.RowSize(), a.ColSize());
     wj::Matd pi = std::get<0>(r);
-    for (int i = 0; i < a.row_size(); ++i) {
-        for (int j = 0; j < l.col_size(); ++j) {
+    for (int i = 0; i < a.RowSize(); ++i) {
+        for (int j = 0; j < l.ColSize(); ++j) {
             if (i == j) {
                 l[i][j] = 1.;
                 u[i][j] = std::get<1>(r)[i][j];
@@ -139,7 +139,7 @@ void test_sln() {
             }
         }
     }
-    auto x = wj::lup_solve(l, u, pi, b);
+    auto x = wj::LupSolve(l, u, pi, b);
     std::cout << l << u << x;
 /*
 matrix:
@@ -176,12 +176,12 @@ size:       3 x 1
 }
 
 void test_inv() {
-    std::cout << wj::Mat<int>::eye(1);
+    std::cout << wj::Mat<int>::Eye(1);
     wj::Matd m{
                {1, 2, 0},
                {3, 4, 4},
                {5, 6, 3}};
-    std::cout << m.inv();
+    std::cout << m.Inverse();
 }
 
 void test_readme() {
@@ -191,7 +191,7 @@ void test_readme() {
                {7, 8, 9}};
     std::cout << a;
     wj::Mat<int> b(3, 4);
-    auto c = wj::Matd::eye(3);
+    auto c = wj::Matd::Eye(3);
 
     wj::Matd d = a + a;
     std::cout << d;
@@ -201,13 +201,13 @@ void test_readme() {
     wj::Matd f = c * a;
     std::cout << f;
 
-    wj::Matd g = a.dot_product(d);
+    wj::Matd g = a.DotProduct(d);
     std::cout << g;
 }
 
 void test_filter_in_geometric() {
     wj::Matd L = {{1, 1}};
-    L = L.trans();
+    L = L.Transpose();
     wj::Matd mu_Y{{0}, {0}};
     wj::Matd D_Y{
                  {2, 0}, 
@@ -221,10 +221,10 @@ void test_filter_in_geometric() {
     wj::Matd B{
                {-1, -1},
                {-1, 0}};
-    // D_YY * B.trans() + D_Y_delta
-    auto tmp1 = D_Y * B.trans() + D_Y_delta;
-    auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
-    auto tmp3 = tmp2.inv();
+    // D_YY * B.Transpose() + D_Y_delta
+    auto tmp1 = D_Y * B.Transpose() + D_Y_delta;
+    auto tmp2 = D_delta + B * D_Y_delta + D_Y_delta.Transpose() * B.Transpose() + B * D_Y * B.Transpose();
+    auto tmp3 = tmp2.Inverse();
     auto Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
     std::cout << "tmp3(inverse):\n" << tmp3;
     std::cout << "Y_hat :\n" << Y_hat;
