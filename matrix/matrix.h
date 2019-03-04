@@ -33,13 +33,13 @@ std::string to_string(const Mat<MatValueType>& mat);
 *************************************************************/
 
 template<typename MatValueType>
-std::tuple<Mat<MatValueType>, Mat<MatValueType>> LuDecomposition(const Mat<MatValueType>& mat);
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUDecomposition(const Mat<MatValueType>& mat);
 
 template<typename MatValueType>
-std::tuple<Mat<MatValueType>, Mat<MatValueType>> LupDecomposition(const Mat<MatValueType>& mat);
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUPDecomposition(const Mat<MatValueType>& mat);
 
 template<typename MatValueType>
-Mat<MatValueType> LupSolve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b);
+Mat<MatValueType> LUPSolve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b);
 
 /*************************************************************
  * template class: Mat
@@ -61,9 +61,9 @@ public:
     friend std::string to_string(const Mat<MatValueType>& mat);
 
     template<typename MatValueType>
-    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> LuDecomposition(const Mat<MatValueType>& mat);
+    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUDecomposition(const Mat<MatValueType>& mat);
     template<typename MatValueType>
-    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> LupDecomposition(const Mat<MatValueType>& mat);
+    friend std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUPDecomposition(const Mat<MatValueType>& mat);
 
 public:
     Mat(std::initializer_list<std::vector<T>> ls)
@@ -249,7 +249,7 @@ public:
 
     Mat<T> Inverse() const {
         Mat<T> ret(RowSize(), RowSize());
-        auto r = LupDecomposition(*this);
+        auto r = LUPDecomposition(*this);
         Mat<T> l(RowSize(), ColSize());
         Mat<T> u(RowSize(), ColSize());
         Mat<T> pi = std::get<0>(r);
@@ -272,7 +272,7 @@ public:
                     }
                 }
             }
-            auto x = wj::LupSolve(l, u, pi, b);
+            auto x = wj::LUPSolve(l, u, pi, b);
             for (size_type i = 0; i < RowSize(); ++i) {
                 ret[i][k] = x[i][0];
             }
@@ -428,7 +428,7 @@ std::string to_string(const Mat<T>& mat) {
  * Solving linear system
 *************************************************************/
 template<typename MatValueType>
-std::tuple<Mat<MatValueType>, Mat<MatValueType>> LuDecomposition(const Mat<MatValueType>& mat) {
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUDecomposition(const Mat<MatValueType>& mat) {
     auto a = mat.Clone();
     auto n = a.RowSize();
     Mat<MatValueType> l(a.RowSize(), a.ColSize());
@@ -459,7 +459,7 @@ std::tuple<Mat<MatValueType>, Mat<MatValueType>> LuDecomposition(const Mat<MatVa
 
 // 奇异矩阵的话会抛出exception:invalid_argument
 template<typename MatValueType>
-std::tuple<Mat<MatValueType>, Mat<MatValueType>> LupDecomposition(const Mat<MatValueType>& mat) {
+std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUPDecomposition(const Mat<MatValueType>& mat) {
     auto a = mat.Clone();
     auto n = a.RowSize();
     Mat<MatValueType> pi(mat.RowSize(), 1);
@@ -497,7 +497,7 @@ std::tuple<Mat<MatValueType>, Mat<MatValueType>> LupDecomposition(const Mat<MatV
 }
 
 template<typename MatValueType>
-Mat<MatValueType> LupSolve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b) {
+Mat<MatValueType> LUPSolve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatValueType>& pi, Mat<MatValueType>& b) {
     auto n = l.RowSize();
     Mat<MatValueType> x(n, 1);
     Mat<MatValueType> y(n, 1);

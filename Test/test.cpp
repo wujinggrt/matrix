@@ -95,10 +95,10 @@ void test_lu() {
                       {6, 13, 5, 19},
                       {2, 19, 10, 23},
                       {4, 10, 11, 31}};
-    auto rr = wj::LupDecomposition(m);
+    auto rr = wj::LUPDecomposition(m);
     std::cout << std::get<0>(rr) << std::get<1>(rr);
     
-    auto r = wj::LuDecomposition(m);
+    auto r = wj::LUDecomposition(m);
     std::cout << std::get<0>(r);
     std::cout << std::get<1>(r);
 
@@ -111,7 +111,7 @@ void test_lup() {
                        {3, 3, 4, -2},
                        {5, 5, 4, 2},
                        {-1, -2, 3.4, -1}};
-    auto rr = wj::LupDecomposition(mm);
+    auto rr = wj::LUPDecomposition(mm);
     std::cout << std::get<0>(rr);
     std::cout << std::get<1>(rr);
 }
@@ -122,7 +122,7 @@ void test_sln() {
                       {3, 4, 4},
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
-    auto r = wj::LupDecomposition(a);
+    auto r = wj::LUPDecomposition(a);
     std::cout << std::get<0>(r) << std::get<1>(r);
     wj::Matd l(a.RowSize(), a.ColSize());
     wj::Matd u(a.RowSize(), a.ColSize());
@@ -139,7 +139,7 @@ void test_sln() {
             }
         }
     }
-    auto x = wj::LupSolve(l, u, pi, b);
+    auto x = wj::LUPSolve(l, u, pi, b);
     std::cout << l << u << x;
 /*
 matrix:
