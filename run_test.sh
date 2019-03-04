@@ -1,4 +1,4 @@
 #!/bin/bash
 
-clang++ -std=c++17 ./test/test.cpp ./test/main.cpp
+clang++ -std=c++17 ./test/unit_test.cpp ./test/main.cpp
 ./a.out 

@@ -1,20 +1,20 @@
 #include "unit_test.h"
 #include "../matrix/matrix.h"
 
-void test() {
-    wj::Mat<int> m{{1}, {2}, {3}};
-    wj::Mat<int> mm{
+void TestBasicArithmetic() {
+    wj::Mat<int> vector_3d{{1}, {2}, {3}};
+    wj::Mat<int> matrix_3by3{
                     {1, 2, 3},
                     {4, 5, 6},
                     {7, 8, 9}};
-    auto mmm = mm * m;
-    std::cout << "*:\n";
-    mmm.Print();
-    auto a = 5.0 * mm;
-    auto b = mm * 5.0;
+    wj::Mat<int> result = matrix_3by3 * vector_3d;
+    std::cout << "乘法*:\n";
+    result.Print();
+    wj::Mat<int> a = 5.0 * matrix_3by3;
+    wj::Mat<int> b = matrix_3by3 * 5.0;
     std::cout << "a:\n";
     a.Print();
-    auto c = a + b + a;
+    wj::Mat<int> c = a + b + a;
     std::cout << "+:c:\n";
     c.Print();
 
@@ -51,22 +51,11 @@ void test() {
     l.Print();
 }
 
-TEST_CASE(TestMatrix) {
-    test();
+TEST_CASE(TestBasicArithmetic) {
+    TestBasicArithmetic();
 }
 
-template<typename T>
-void print_test(std::initializer_list<std::initializer_list<T>> ls) {
-    for (auto e: ls) {
-        for (auto ee: e) {
-            std::cout << ee << ' ';
-        }
-        std::cout << '\n';
-    }
-    std::cout << '\n';
-}
-
-void test_double() {
+void TestDouble() {
     wj::Mat<double> m{
                       {1., 2., 3.},
                       {4., 5., 6.},
@@ -85,11 +74,11 @@ void test_double() {
     std::cout << s << std::endl;
 }
 
-TEST_CASE(TestDoubleFormat) {
-    test_double();
+TEST_CASE(TestDouble) {
+    TestDouble();
 }
 
-void test_lu() {
+void TestLU() {
     wj::Mat<double> m{
                       {2, 3, 1, 5},
                       {6, 13, 5, 19},
@@ -101,11 +90,13 @@ void test_lu() {
     auto r = wj::LUDecomposition(m);
     std::cout << std::get<0>(r);
     std::cout << std::get<1>(r);
-
-
 }
 
-void test_lup() {
+TEST_CASE(TestLU) {
+    TestLU();
+}
+
+void TestLUP() {
     wj::Mat<double> mm{
                        {2, 0, 2, 0.6},
                        {3, 3, 4, -2},
@@ -116,7 +107,44 @@ void test_lup() {
     std::cout << std::get<1>(rr);
 }
 
-void test_sln() {
+TEST_CASE(TestLUP) {
+    TestLUP();
+}
+
+
+// Terminal will output below:
+// matrix:
+// value_type: d
+// size:       3 x 1
+// [[2]
+//  [0]
+//  [1]]
+// matrix:
+// value_type: d
+// size:       3 x 3
+// [[5, 6, 3]
+//  [0.2, 0.8, -0.6]
+//  [0.6, 0.5, 2.5]]
+// matrix:
+// value_type: d
+// size:       3 x 3
+// [[1, 0, 0]
+//  [0.2, 1, 0]
+//  [0.6, 0.5, 1]]
+// matrix:
+// value_type: d
+// size:       3 x 3
+// [[5, 6, 3]
+//  [0, 0.8, -0.6]
+//  [0, 0, 2.5]]
+// matrix:
+// value_type: d
+// size:       3 x 1
+// [[-1.4]
+//  [2.2]
+//  [0.6]]
+//
+void TestLUPSolve() {
     wj::Mat<double> a{
                       {1, 2, 0},
                       {3, 4, 4},
@@ -141,41 +169,13 @@ void test_sln() {
     }
     auto x = wj::LUPSolve(l, u, pi, b);
     std::cout << l << u << x;
-/*
-matrix:
-value_type: d
-size:       3 x 1
-[[2]
- [0]
- [1]]
-matrix:
-value_type: d
-size:       3 x 3
-[[5, 6, 3]
- [0.2, 0.8, -0.6]
- [0.6, 0.5, 2.5]]
-matrix:
-value_type: d
-size:       3 x 3
-[[1, 0, 0]
- [0.2, 1, 0]
- [0.6, 0.5, 1]]
-matrix:
-value_type: d
-size:       3 x 3
-[[5, 6, 3]
- [0, 0.8, -0.6]
- [0, 0, 2.5]]
-matrix:
-value_type: d
-size:       3 x 1
-[[-1.4]
- [2.2]
- [0.6]]
- */
 }
 
-void test_inv() {
+TEST_CASE(TestLUPSolve) {
+    TestLUPSolve();
+}
+
+void TestInverse() {
     std::cout << wj::Mat<int>::Eye(1);
     wj::Matd m{
                {1, 2, 0},
@@ -184,7 +184,11 @@ void test_inv() {
     std::cout << m.Inverse();
 }
 
-void test_readme() {
+TEST_CASE(TestInverse) {
+    TestInverse();
+}
+
+void TestDotProduct() {
     wj::Matd a{
                {1, 2, 3},
                {4, 5, 6},
@@ -205,7 +209,24 @@ void test_readme() {
     std::cout << g;
 }
 
-void test_filter_in_geometric() {
+TEST_CASE(TestDotProduct) {
+    TestDotProduct();
+}
+
+// Terminal will output below:
+// tmp3(inverse):
+// matrix:
+// value_type: d
+// size:       2 x 2
+// [[0.222222, -0.111111]
+//  [-0.111111, 0.222222]]
+// Y_hat :
+// matrix:
+// value_type: d
+// size:       2 x 1
+// [[-0.555556]
+//  [-0.222222]]
+void TestFilterInGeometic() {
     wj::Matd L = {{1, 1}};
     L = L.Transpose();
     wj::Matd mu_Y{{0}, {0}};
@@ -228,18 +249,9 @@ void test_filter_in_geometric() {
     auto Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
     std::cout << "tmp3(inverse):\n" << tmp3;
     std::cout << "Y_hat :\n" << Y_hat;
-/*
-tmp3(inverse):
-matrix:
-value_type: d
-size:       2 x 2
-[[0.222222, -0.111111]
- [-0.111111, 0.222222]]
-Y_hat :
-matrix:
-value_type: d
-size:       2 x 1
-[[-0.555556]
- [-0.222222]]
-*/
+
+}
+
+TEST_CASE(TestFilterInGeometic) {
+    TestFilterInGeometic();
 }
