@@ -2,28 +2,30 @@
 #include "../matrix/matrix.hpp"
 
 void TestBasicArithmetic() {
-    wj::Mat<int> vector_3d{{1}, {2}, {3}};
+    wj::Mat<int> vector_3by1{{1}, {2}, {3}};
     wj::Mat<int> matrix_3by3{
-                    {1, 2, 3},
-                    {4, 5, 6},
-                    {7, 8, 9}};
-    wj::Mat<int> result = matrix_3by3 * vector_3d;
+                             {1, 2, 3},
+                             {4, 5, 6},
+                             {7, 8, 9}};
+    printf("我是a[0][0]:%i\n 我是a(1, 1):%i\n", matrix_3by3[0][0], matrix_3by3(1, 1));
+    wj::Mat<int> result = matrix_3by3 * vector_3by1;
     std::cout << "乘法*:\n";
     result.Print();
     wj::Mat<int> a = 5.0 * matrix_3by3;
+    wj::Mat<int> ab = 5.0 * matrix_3by3;
     wj::Mat<int> b = matrix_3by3 * 5.0;
     std::cout << "a:\n";
     a.Print();
     wj::Mat<int> c = a + b + a;
-    std::cout << "+:c:\n";
+    std::cout << "加法+:\n";
     c.Print();
 
     auto d = c - a;
-    std::cout << "-:\n";
+    std::cout << "减法-:\n";
     d.Print();
 
     auto e = c / a;
-    std::cout << "/:\n";
+    std::cout << "除法/:\n";
     e.Print();
 
     auto f = a.DotProduct(e);

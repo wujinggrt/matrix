@@ -76,7 +76,7 @@ public:
             throw std::invalid_argument("argument can not be 0!");
         }
     }
-
+    
     static Mat<T> Eye(std::size_t row) {
         Mat<T> ret(row, row);
         for (std::size_t i = 0; i < row; ++i) {
