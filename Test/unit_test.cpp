@@ -1,5 +1,5 @@
 #include "unit_test.h"
-#include "../matrix/matrix.h"
+#include "../matrix/matrix.hpp"
 
 void TestBasicArithmetic() {
     wj::Mat<int> vector_3d{{1}, {2}, {3}};

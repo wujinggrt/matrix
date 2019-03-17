@@ -19,7 +19,7 @@
 
 ## 使用方法
 
-在使用的CPP文件目录下， 拷贝matrix.h，在使用的cpp```#include "matrix.h"```
+在使用的CPP文件目录下， 拷贝matrix.h，在使用的cpp```#include "matrix/matrix.h"```
 
 <h3 id="1.">1. 基本类型</h3>
 
@@ -35,20 +35,21 @@ using Mati = wj::Mat<int>;
 
 ```C++
 // 一个3x3的矩阵
-wj::Matd a{{1, 2, 3},
-       {4, 5, 6},
-       {7, 8, 9}};
+wj::Matd a{
+           {1, 2, 3},
+           {4, 5, 6},
+           {7, 8, 9}};
 // 一个3x4的矩阵，默认为元素全为0的矩阵
 wj::Mat<int> b(3, 4);
 ```
 
-如果不想在每一个对象/函数前用```wj::```，可以在```#include "matrix.h"```之后使用```using namespace wj;```。（以下例子默认使用using...）
+如果不想在每一个对象/函数前用```wj::```，可以在```#include "matrix/matrix.h"```之后使用```using namespace wj;```。（以下例子默认使用using...）
 
 #### 1.2 单位矩阵
 
 ```C++
 // c 是一个3x3的单位矩阵
-Matd c = Matd::eye(3);
+Matd c = Matd::Eye(3);
 ```
 
 #### 1.3 使用流进行(cout)输出
@@ -65,17 +66,17 @@ size:       3 x 3
  */
 ```
 
-#### 1.4 clone()
+#### 1.4 Clone()
 
 ```C++
-Matd cl = a.clone()
+Matd cl = a.Clone()
 ```
 
 #### 1.5 行列大小
 
 ```C++
-std::size_t rows = a.row_size();
-std::size_t cols = a.col_size();
+std::size_t row = a.RowSize();
+std::size_t col = a.ColSize();
 ```
 
 #### 1.6 下标索引
@@ -83,6 +84,7 @@ std::size_t cols = a.col_size();
 ```C++
 // d 是第一行第二个元素
 double d = a[0][1];
+double another = a(0, 1);
 ```
 
 <h3 id="2.">2. 加法</h3>
@@ -140,7 +142,7 @@ size:       3 x 3
 
 ```C++
 // a点乘d
-Matd g = a.dot_product(d);
+Matd g = a.DotProduct(d);
 /*
 matrix:
 value_type: d
@@ -156,11 +158,12 @@ size:       3 x 3
 转置和求逆，以及各种操作都是产生新的矩阵(Mat对象)。
 
 ```C++
-Matd m{{1, 2, 0},
-        {3, 4, 4},
-        {5, 6, 3}};
+Matd m{
+       {1, 2, 0},
+       {3, 4, 4},
+       {5, 6, 3}};
 
-cout << m.trans();
+cout << m.Transpose();
 /*
 matrix:
 value_type: d
@@ -170,7 +173,7 @@ size:       3 x 3
  [0, 4, 3]]
 */
 
-cout << m.inv();
+cout << m.Inverse();
 /*
 matrix:
 value_type: d
@@ -183,11 +186,11 @@ size:       3 x 3
 
  <h3 id="6.">6. 随机数矩阵</h3>
 
-随机数矩阵使用```Mat<T>```的静态函数```Mat<T>::random(low, high, row, col)```来生成。是随机数均匀分布，生成的类型是```T```。
+随机数矩阵使用```Mat<T>```的静态函数```Mat<T>::Random(low, high, row, col)```来生成。是随机数均匀分布，生成的类型是```T```。
 
 例子：</br>
 ```C++
-Matd m = wj::Matd::random(-100., 100., 5, 5);
+Matd m = wj::Matd::Random(-100., 100., 5, 5);
 cout << m;
 /*
 matrix:
@@ -200,7 +203,7 @@ size:       5 x 5
  [96.5101, 50.6712, -85.4628, 76.9414, -12.7177]]
  */
 
-Matd mm = wj::Mat<int>::random(-100., 100., 5, 5);
+Mati mm = wj::Mat<int>::Random(-100., 100., 5, 5);
 cout << mm;
 /*
 matrix:
@@ -218,7 +221,7 @@ size:       5 x 5
 
 ```C++
 Matd L = {{1, 1}};
-L = L.trans();
+L = L.Transpose();
 Matd mu_Y{{0}, 
             {0}};
 Matd D_Y{{2, 0}, 
@@ -229,10 +232,10 @@ Matd D_Y_delta{{0, -1},
                 {0, 0}};
 Matd B{{-1, -1},
         {-1, 0}};
-// D_YY * B.trans() + D_Y_delta
-Matd tmp1 = D_Y * B.trans() + D_Y_delta;
-Matd tmp2 = D_delta + B * D_Y_delta + D_Y_delta.trans() * B.trans() + B * D_Y * B.trans();
-Matd tmp3 = tmp2.inv();
+// D_YY * B.Transpose() + D_Y_delta
+Matd tmp1 = D_Y * B.Transpose() + D_Y_delta;
+Matd tmp2 = D_delta + B * D_Y_delta + D_Y_delta.Transpose() * B.Transpose() + B * D_Y * B.Transpose();
+Matd tmp3 = tmp2.Inverse();
 Matd Y_hat = mu_Y + tmp1 * tmp3 * (L - B * mu_Y);
 cout << "tmp3(inverse):\n" << tmp3;
 cout << "Y_hat :\n" << Y_hat;
@@ -259,5 +262,5 @@ size:       2 x 1
 19-2-27
 
 完成部分重构，添加了
-1. operator()(size_t row_index, col_index)
+1. operator()(size_t rowIndex, colIndex)
 2. 完成binary_operation对宏替换为函数
