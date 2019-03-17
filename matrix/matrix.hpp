@@ -124,7 +124,7 @@ public:
         return data_[i];
     }
 
-            // throw range
+    // throw range
     const std::vector<T>& operator[](size_type i) const {
         if (i >= data_.size()) {
             throw std::out_of_range("Mat:data_:index out of range!");
@@ -428,6 +428,7 @@ std::string to_string(const Mat<T>& mat) {
 
 /*************************************************************
  * Solving linear system
+ * 参考《算法导论》的矩阵操作章节
 *************************************************************/
 template<typename MatValueType>
 std::tuple<Mat<MatValueType>, Mat<MatValueType>> LUDecomposition(const Mat<MatValueType>& mat) {
