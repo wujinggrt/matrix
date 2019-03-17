@@ -73,7 +73,7 @@ public:
     Mat(std::size_t rows = 1, std::size_t cols = 1)
         : data_(rows, std::vector<T>(cols)) {
         if (rows == 0 || cols == 0) {
-            throw std::invalid_argument("argument can not be 0!");
+            throw std::invalid_argument("Occured in cunstructor:\nargument can not be 0!");
         }
     }
     
@@ -150,7 +150,7 @@ public:
     
     // +,-,*,/操作在行、列不匹配的时候则会抛出exception:invalid_argument
     Mat<T> operator+(const Mat<T>& other) const {
-        CheckSize(other);
+        CheckSize(other, "Occured in addition:\n");
 
         Mat<T> ret(RowSize(), ColSize());
         for (size_type i = 0; i < RowSize(); ++i) {
@@ -162,7 +162,7 @@ public:
     }
 
     Mat<T> operator-(const Mat<T>& other) const {
-        CheckSize(other);
+        CheckSize(other, "Occured in subtraction:\n");
 
         Mat<T> ret(RowSize(), ColSize());
         for (size_type i = 0; i < RowSize(); ++i) {
@@ -175,7 +175,7 @@ public:
 
     Mat<T> operator*(const Mat<T>& other) const {
         if (ColSize() != other.RowSize()) {
-            throw std::invalid_argument(std::string("incompatible dimensions\n") + 
+            throw std::invalid_argument(std::string("Occured in mupltiplication:\nincompatible dimensions\n") + 
                 "right-matrix rows, cols:" + std::to_string(RowSize()) + ", " + std::to_string(ColSize()) +
                 "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize())
                 );
@@ -196,7 +196,7 @@ public:
     }
 
     Mat<T> operator/(const Mat<T>& other) const {
-        CheckSize(other);
+        CheckSize(other, "Occured in division:\n");
 
         Mat<T> ret(RowSize(), ColSize());
         for (size_type i = 0; i < RowSize(); ++i) {
@@ -216,7 +216,7 @@ public:
     }
 
     Mat<T> DotProduct(const Mat<T>& other) const {
-        CheckSize(other);
+        CheckSize(other, "Occured in DotProduct:\n");
 
         Mat<T> ret(RowSize(), ColSize());
         for (size_type i = 0; i < RowSize(); ++i) {
@@ -283,9 +283,11 @@ public:
 private:
     // if the matrix other is not equal to this,
     // throw std::invalid_argument
-    void CheckSize(const Mat<T>& other) const {
+    void CheckSize(const Mat<T>& other, const std::string& place) const {
         if (RowSize() != other.RowSize() || ColSize() != other.ColSize()) {
-            throw std::invalid_argument(std::string("incompatible dimensions\n") +
+            throw std::invalid_argument(
+                                        place + 
+                                        std::string("incompatible dimensions\n") +
                                         "right-matrix rows, cols:" + std::to_string(RowSize()) + ", " + std::to_string(ColSize()) +
                                         "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize())
                                         );
