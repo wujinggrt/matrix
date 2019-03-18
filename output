@@ -1,0 +1,225 @@
+TestBasicArithmetic
+56 ./test/unit_test.cpp
+我是a[0][0]:1
+我是a(1, 1):5
+乘法*:
+14
+32
+50
+
+a:
+5 10 15
+20 25 30
+35 40 45
+
+加法+:
+15 30 45
+60 75 90
+105 120 135
+
+减法-:
+10 20 30
+40 50 60
+70 80 90
+
+除法/:
+3 3 3
+3 3 3
+3 3 3
+
+DotProduct:
+15 30 45
+60 75 90
+105 120 135
+
+g + a:
+1005 1010 1015
+1020 1025 1030
+1035 1040 1045
+
+a + 1000:
+1005 1010 1015
+1020 1025 1030
+1035 1040 1045
+
+h - 1000:
+5 10 15
+20 25 30
+35 40 45
+
+a / 2:
+2 5 7
+10 12 15
+17 20 22
+
+2 / a:
+0 0 0
+0 0 0
+0 0 0
+
+TestDouble
+79 ./test/unit_test.cpp
+2 * a:
+2 4 6
+8 10 12
+14 16 18
+
+2 / m:
+2 1 0.666667
+0.5 0.4 0.333333
+0.285714 0.25 0.222222
+
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 2, 3]
+ [4, 5, 6]
+ [7, 8, 9]]
+
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 4, 7]
+ [2, 5, 8]
+ [3, 6, 9]]
+
+[[ 1.000000, 2.000000, 3.000000, ]
+ [ 4.000000, 5.000000, 6.000000, ]
+ [ 7.000000, 8.000000, 9.000000, ]]
+
+TestLU
+97 ./test/unit_test.cpp
+matrix:
+value_type: d
+size:       4 x 1
+[[1]
+ [2]
+ [3]
+ [0]]
+matrix:
+value_type: d
+size:       4 x 4
+[[6, 13, 5, 19]
+ [0.333333, 14.6667, 8.33333, 16.6667]
+ [0.666667, 0.0909091, 6.90909, 16.8182]
+ [0.333333, -0.0909091, 0.0131579, -0.0394737]]
+matrix:
+value_type: d
+size:       4 x 4
+[[1, 0, 0, 0]
+ [3, 1, 0, 0]
+ [1, 4, 1, 0]
+ [2, 1, 7, 1]]
+matrix:
+value_type: d
+size:       4 x 4
+[[2, 3, 1, 5]
+ [0, 4, 2, 4]
+ [0, 0, 1, 2]
+ [0, 0, 0, 3]]
+TestLUP
+112 ./test/unit_test.cpp
+matrix:
+value_type: d
+size:       4 x 1
+[[2]
+ [0]
+ [3]
+ [1]]
+matrix:
+value_type: d
+size:       4 x 4
+[[5, 5, 4, 2]
+ [0.4, -2, 0.4, -0.2]
+ [-0.2, 0.5, 4, -0.5]
+ [0.6, -0, 0.4, -3]]
+TestLUPSolve
+176 ./test/unit_test.cpp
+matrix:
+value_type: d
+size:       3 x 1
+[[2]
+ [0]
+ [1]]
+matrix:
+value_type: d
+size:       3 x 3
+[[5, 6, 3]
+ [0.2, 0.8, -0.6]
+ [0.6, 0.5, 2.5]]
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 0, 0]
+ [0.2, 1, 0]
+ [0.6, 0.5, 1]]
+matrix:
+value_type: d
+size:       3 x 3
+[[5, 6, 3]
+ [0, 0.8, -0.6]
+ [0, 0, 2.5]]
+matrix:
+value_type: d
+size:       3 x 1
+[[-1.4]
+ [2.2]
+ [0.6]]
+TestInverse
+189 ./test/unit_test.cpp
+matrix:
+value_type: i
+size:       1 x 1
+[[1]]
+matrix:
+value_type: d
+size:       3 x 3
+[[-1.2, -0.6, 0.8]
+ [1.1, 0.3, -0.4]
+ [-0.2, 0.4, -0.2]]
+TestDotProduct
+214 ./test/unit_test.cpp
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 2, 3]
+ [4, 5, 6]
+ [7, 8, 9]]
+matrix:
+value_type: d
+size:       3 x 3
+[[2, 4, 6]
+ [8, 10, 12]
+ [14, 16, 18]]
+matrix:
+value_type: d
+size:       3 x 3
+[[3, 4, 5]
+ [6, 7, 8]
+ [9, 10, 11]]
+matrix:
+value_type: d
+size:       3 x 3
+[[1, 2, 3]
+ [4, 5, 6]
+ [7, 8, 9]]
+matrix:
+value_type: d
+size:       3 x 3
+[[2, 8, 18]
+ [32, 50, 72]
+ [98, 128, 162]]
+TestFilterInGeometic
+257 ./test/unit_test.cpp
+tmp3(inverse):
+matrix:
+value_type: d
+size:       2 x 2
+[[0.222222, -0.111111]
+ [-0.111111, 0.222222]]
+Y_hat :
+matrix:
+value_type: d
+size:       2 x 1
+[[-0.555556]
+ [-0.222222]]

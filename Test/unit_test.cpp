@@ -1,5 +1,5 @@
 #include "unit_test.h"
-#include "../matrix/matrix.hpp"
+#include "../src/matrix.hpp"
 
 void TestBasicArithmetic() {
     wj::Mat<int> vector_3by1{{1}, {2}, {3}};
@@ -7,7 +7,7 @@ void TestBasicArithmetic() {
                              {1, 2, 3},
                              {4, 5, 6},
                              {7, 8, 9}};
-    printf("我是a[0][0]:%i\n 我是a(1, 1):%i\n", matrix_3by3[0][0], matrix_3by3(1, 1));
+    printf("我是a[0][0]:%i\n我是a(1, 1):%i\n", matrix_3by3[0][0], matrix_3by3(1, 1));
     wj::Mat<int> result = matrix_3by3 * vector_3by1;
     std::cout << "乘法*:\n";
     result.Print();
