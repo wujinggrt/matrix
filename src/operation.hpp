@@ -5,12 +5,13 @@
 
 namespace wj{
 
+
+
 /*************************************************************
  * binary operator overload implementation
 *************************************************************/
 
-// To do
-// using SFINAE 来限制num必须是arithmetic 
+// SFINAE 来限制num必须是arithmetic 
 // 这个函数主要用来完成单个数加上这个Mat，
 // 然后给Mat中的元素与他进行进行op(num, each src element)
 template<typename NumType, typename MatValueType, typename BinaryOperation>
@@ -20,7 +21,7 @@ Mat<MatValueType> DoBinaryOperate(
                                   BinaryOperation op,
                                   std::enable_if_t<
                                       std::is_arithmetic<NumType>::value
-                                      >* = nullptr) { 
+                                      >* = nullptr) {
     Mat<MatValueType> ret(src.RowSize(), src.ColSize());
     MatValueType casted_num = static_cast<MatValueType>(num);
     for (std::size_t i = 0; i < src.RowSize(); ++i) {
@@ -125,6 +126,29 @@ std::string to_string(const Mat<T>& mat) {
     ret += "]\n";
     return ret;
 }
+
+/**
+ * To do
+ * 使用动态规划来提高矩阵链式乘法的效率
+ * 限制传入的类型都是一个Mat<T>的
+ * */
+template<typename T>
+std::enable_if_t<std::is_arithmetic<T>::value, Mat<T>>
+AuxOptimizedMatrixChainMultiplication(std::initializer_list<Mat<T>> il) {
+    auto iter = std::begin(il);
+    Mat<T> ret(iter->RowSize(), std::rbegin(il)->ColSize());
+    return ret;
+}
+
+/**
+ * Return Mat type
+ * */
+template<typename... Args>
+auto OptimizedMatrixChainMultiplication(Args&&... args) {
+    // 包扩展到il上，然后转发
+    return AuxOptimizedMatrixChainMultiplication({std::forward<Args>(args)...});
+}
+
 
 /*************************************************************
  * binary operator overload implementation
