@@ -5,6 +5,8 @@
 
 主要的头文件在**matrix**目录下。
 
+# 当前版本需要C++17
+
 ## 已完成的功能
 
 >v1.0
@@ -276,3 +278,60 @@ size:       2 x 1
 完成部分重构，添加了
 1. operator()(size_t rowIndex, colIndex)
 2. 完成binary_operation对宏替换为函数
+
+19-3-20
+
+**需要支持C++17**
+
+1. 更新动态规划对矩阵乘法优化。方法为```OptimizedChainMultiply(Args&&... args)```。输入参数给他，就可以完成由动态规划优化的矩阵链式乘法。
+
+```C++
+        void TestOptimizedChainMultiply() {
+        
+        std::clock_t time_point_1;
+        std::clock_t time_point_2;
+        std::clock_t time_point_3;
+        using wj::Mati;
+        Mati a0 = Mati::Random(0, 10, 100, 500);
+        Mati a1 = Mati::Random(0, 10, 500, 10);
+        Mati a2 = Mati::Random(0, 10, 10, 75);
+        Mati a3 = Mati::Random(0, 10, 75, 55);
+        Mati a4 = Mati::Random(0, 10, 55, 10);
+        Mati a5 = Mati::Random(0, 10, 10, 100);
+        Mati a6 = Mati::Random(0, 10, 100, 74);
+        Mati a7 = Mati::Random(0, 10, 74, 45);
+        Mati a8 = Mati::Random(0, 10, 45, 200);
+        Mati a9 = Mati::Random(0, 10, 200, 100);
+        Mati a10 = Mati::Random(0, 10, 100, 200);
+        Mati a11 = Mati::Random(0, 10, 200, 700);
+        
+        time_point_1 = std::clock();
+        auto result = a0 * a1 * a2 * a3 * a4 *
+                a5 * a6 * a7 * a8 * a9 * a10 * a11;
+        time_point_2 = std::clock();
+        auto ret = wj::OptimizedChainMultiply(
+                a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
+        );
+        time_point_3 = std::clock();
+        std::cout << std::boolalpha << (result == ret) << "\n";
+
+        double dur1 = static_cast<double>(time_point_2 - time_point_1) * 1000.;
+        double dur2 = static_cast<double>(time_point_3 - time_point_2) * 1000.;
+        std::fprintf(stdout, "Native use time:%f(ms)\n",(dur1 / CLOCKS_PER_SEC));
+        std::fprintf(stdout, "Optimezed use time:%f(ms)\n",(dur2 / CLOCKS_PER_SEC));
+        }
+
+        /**
+         * 在单元测试中输出的结果：
+        TestOptimizedChainMultiply
+        15:27:47
+        144 ./TEST/unit_test.cpp
+        true
+        Native use time:687.500000(ms)
+        Optimezed use time:93.750000(ms)
+        */
+```
+
+2. 更新对Random的使用，使用了`if constexpr`来使得随机生成器合法，需要C++17.
+
+3. 添加了==运算符的重载，能够比较两个相同类型的Mat。不同类型是不能够比较的。

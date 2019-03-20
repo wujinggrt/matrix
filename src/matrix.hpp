@@ -9,7 +9,7 @@ namespace wj {
 
 using Matd = Mat<double>;
 using Matf = Mat<float>;
-using Mati = Mat<int>;
+using Mati = Mat<int32_t>;
 
 }
 

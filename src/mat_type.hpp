@@ -44,6 +44,11 @@ Mat<MatValueType> LUPSolve(Mat<MatValueType>& l, Mat<MatValueType>& u, Mat<MatVa
 /*************************************************************
  * template class: Mat
 *************************************************************/
+
+/**
+ * 系统合成的 copy/remove constructor/assignment operator 够用。
+ * 目前不用去重写。
+ * */
 template<typename T>
 class Mat {
 private:
@@ -70,7 +75,7 @@ public:
             throw std::invalid_argument("Occured in cunstructor:\nargument can not be 0!");
         }
     }
-    
+
     static Mat<T> Eye(std::size_t row) {
         Mat<T> ret(row, row);
         for (std::size_t i = 0; i < row; ++i) {
@@ -82,10 +87,19 @@ public:
     static Mat<T> Random(T low, T high, std::size_t row = 1, std::size_t col = 1) {
         Mat<T> ret(row, col);
         std::default_random_engine engine;
-        std::uniform_real_distribution<T> num_distribution(low, high);
-        for (std::size_t i = 0; i < row; ++i) {
-            for (std::size_t j = 0; j < col; ++j) {
-                ret[i][j] = num_distribution(engine);
+        if constexpr (std::is_floating_point_v<T>) {
+            std::uniform_real_distribution<T> num_distribution(low, high);
+            for (std::size_t i = 0; i < row; ++i) {
+                for (std::size_t j = 0; j < col; ++j) {
+                    ret[i][j] = num_distribution(engine);
+                }
+            }
+        } else {
+            std::uniform_int_distribution<T> num_distribution(low, high);
+            for (std::size_t i = 0; i < row; ++i) {
+                for (std::size_t j = 0; j < col; ++j) {
+                    ret[i][j] = num_distribution(engine);
+                }
             }
         }
         return ret;
@@ -108,6 +122,10 @@ public:
             os << '\n';
         }
         os << '\n';
+    }
+
+    bool operator==(const Mat<T>& other) {
+        return data_ == other.data_;
     }
 
     // throw range

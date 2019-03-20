@@ -14,9 +14,11 @@ static int test_pass = 0;
     public: \
         TEST_CASE_CLASS_##NAME() \
         { \
-            std::cout << #NAME << std::endl; \
-            std::cout << __LINE__ << " " << __FILE__ << std::endl; \
+            std::cout << #NAME << "\n"; \
+            std::cout << __TIME__ << "\n"; \
+            std::cout << __LINE__ << " " << __FILE__ << "\n"; \
             TEST_CASE_FUNCTION_##NAME(); \
+            std::cout << "\n"; \
         } \
     } TEST_CASE_INSTANCE_##NAME; \
     void TEST_CASE_FUNCTION_##NAME()

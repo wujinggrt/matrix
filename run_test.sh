@@ -1,4 +1,6 @@
 #!/bin/bash
 
-clang++ -std=c++14 ./test/unit_test.cpp ./test/main.cpp
-./a.out > output
+g++ -std=c++17 ./TEST/unit_test.cpp ./TEST/main.cpp
+if [ -f ./a.out ];then
+    ./a.out > output
+fi

@@ -1,10 +1,11 @@
+#include <ctime>
+
 #include "unit_test.h"
 #include "../src/matrix.hpp"
 
 void TestBasicArithmetic() {
     wj::Mat<int> vector_3by1{{1}, {2}, {3}};
-    wj::Mat<int> matrix_3by3{
-                             {1, 2, 3},
+    wj::Mat<int> matrix_3by3{{1, 2, 3},
                              {4, 5, 6},
                              {7, 8, 9}};
     printf("我是a[0][0]:%i\n我是a(1, 1):%i\n", matrix_3by3[0][0], matrix_3by3(1, 1));
@@ -58,8 +59,7 @@ TEST_CASE(TestBasicArithmetic) {
 }
 
 void TestDouble() {
-    wj::Mat<double> m{
-                      {1., 2., 3.},
+    wj::Mat<double> m{{1., 2., 3.},
                       {4., 5., 6.},
                       {7., 8., 9.}};   
     auto a = 2 * m;
@@ -80,9 +80,73 @@ TEST_CASE(TestDouble) {
     TestDouble();
 }
 
+/**
+ * 测试矩阵的 == 运算符
+ * */
+void TestEqual() {
+    wj::Mat<int32_t> vector_3by1{{1}, {2}, {3}};
+    wj::Mat<int32_t> another{{1}, {2}, {3}};
+    // true
+    std::cout << std::boolalpha 
+        << (vector_3by1 == another) << "\n";
+}
+
+TEST_CASE(TestEqual) {
+    TestEqual();
+}
+
+/**
+ * 使用optimized的在这个例子大6倍左右的差别。
+ * 但是具体节省的时间是不确定的，由问题复杂程度而定。
+ * 当然，大多数情况肯定比原生版本高效。
+ * 
+ * Native use time:640.625000(ms)
+ * Optimezed use time:109.375000(ms)
+ * 
+ * 在规模小的矩阵乘法中，节省的时间可能不明显，而且在dp上预处理花费可能不少。
+ * 但是规模大了就可以使用这个方法来解决。
+ * */
+void TestOptimizedChainMultiply() {
+    
+    std::clock_t time_point_1;
+    std::clock_t time_point_2;
+    std::clock_t time_point_3;
+    using wj::Mati;
+    Mati a0 = Mati::Random(0, 10, 100, 500);
+    Mati a1 = Mati::Random(0, 10, 500, 10);
+    Mati a2 = Mati::Random(0, 10, 10, 75);
+    Mati a3 = Mati::Random(0, 10, 75, 55);
+    Mati a4 = Mati::Random(0, 10, 55, 10);
+    Mati a5 = Mati::Random(0, 10, 10, 100);
+    Mati a6 = Mati::Random(0, 10, 100, 74);
+    Mati a7 = Mati::Random(0, 10, 74, 45);
+    Mati a8 = Mati::Random(0, 10, 45, 200);
+    Mati a9 = Mati::Random(0, 10, 200, 100);
+    Mati a10 = Mati::Random(0, 10, 100, 200);
+    Mati a11 = Mati::Random(0, 10, 200, 700);
+    
+    time_point_1 = std::clock();
+    auto result = a0 * a1 * a2 * a3 * a4 *
+        a5 * a6 * a7 * a8 * a9 * a10 * a11;
+    time_point_2 = std::clock();
+    auto ret = wj::OptimizedChainMultiply(
+        a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
+    );
+    time_point_3 = std::clock();
+    std::cout << std::boolalpha << (result == ret) << "\n";
+
+    double dur1 = static_cast<double>(time_point_2 - time_point_1) * 1000.;
+    double dur2 = static_cast<double>(time_point_3 - time_point_2) * 1000.;
+    std::fprintf(stdout, "Native use time:%f(ms)\n",(dur1 / CLOCKS_PER_SEC));
+    std::fprintf(stdout, "Optimezed use time:%f(ms)\n",(dur2 / CLOCKS_PER_SEC));
+}
+
+TEST_CASE(TestOptimizedChainMultiply) {
+    TestOptimizedChainMultiply();
+}
+
 void TestLU() {
-    wj::Mat<double> m{
-                      {2, 3, 1, 5},
+    wj::Mat<double> m{{2, 3, 1, 5},
                       {6, 13, 5, 19},
                       {2, 19, 10, 23},
                       {4, 10, 11, 31}};
@@ -99,8 +163,7 @@ TEST_CASE(TestLU) {
 }
 
 void TestLUP() {
-    wj::Mat<double> mm{
-                       {2, 0, 2, 0.6},
+    wj::Mat<double> mm{{2, 0, 2, 0.6},
                        {3, 3, 4, -2},
                        {5, 5, 4, 2},
                        {-1, -2, 3.4, -1}};
@@ -147,8 +210,7 @@ TEST_CASE(TestLUP) {
 //  [0.6]]
 //
 void TestLUPSolve() {
-    wj::Mat<double> a{
-                      {1, 2, 0},
+    wj::Mat<double> a{{1, 2, 0},
                       {3, 4, 4},
                       {5, 6, 3}};
     wj::Mat<double> b{{3}, {7}, {8}};
@@ -179,8 +241,7 @@ TEST_CASE(TestLUPSolve) {
 
 void TestInverse() {
     std::cout << wj::Mat<int>::Eye(1);
-    wj::Matd m{
-               {1, 2, 0},
+    wj::Matd m{{1, 2, 0},
                {3, 4, 4},
                {5, 6, 3}};
     std::cout << m.Inverse();
@@ -191,8 +252,7 @@ TEST_CASE(TestInverse) {
 }
 
 void TestDotProduct() {
-    wj::Matd a{
-               {1, 2, 3},
+    wj::Matd a{{1, 2, 3},
                {4, 5, 6},
                {7, 8, 9}};
     std::cout << a;
@@ -232,17 +292,13 @@ void TestFilterInGeometic() {
     wj::Matd L = {{1, 1}};
     L = L.Transpose();
     wj::Matd mu_Y{{0}, {0}};
-    wj::Matd D_Y{
-                 {2, 0}, 
+    wj::Matd D_Y{{2, 0}, 
                  {0, 2}};
-    wj::Matd D_delta{
-                     {2, 0}, 
+    wj::Matd D_delta{{2, 0}, 
                      {0, 2}};
-    wj::Matd D_Y_delta{
-                       {0, -1}, 
+    wj::Matd D_Y_delta{{0, -1}, 
                        {0, 0}};
-    wj::Matd B{
-               {-1, -1},
+    wj::Matd B{{-1, -1},
                {-1, 0}};
     // D_YY * B.Transpose() + D_Y_delta
     auto tmp1 = D_Y * B.Transpose() + D_Y_delta;
