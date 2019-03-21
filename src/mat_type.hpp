@@ -15,7 +15,7 @@
 
 namespace wj {
 
-template<typename T>
+template<typename MatValueType>
 class Mat;
 
 /*************************************************************

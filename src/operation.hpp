@@ -165,13 +165,13 @@ auto ApplyMultiplicationInOrder(const std::vector<Iter>& matrices,
     actual_mat_type product;
     // product 是迭代器指向的Mat类型
     // variant中存放的是能够 dereference 为对应Mat类型
-    using denote_to_mat = 
+    using dereference_to_mat = 
         std::variant<Iter, 
             std::shared_ptr<actual_mat_type>>;
     // stack中保存那些能够被解引用的值，
     // 然后解析乘法顺序，弹出两个操作数相乘，然后添加结果item到stack上
     // 直到最后，得到结果。stack最后的值
-    std::stack<denote_to_mat> matrix_order;
+    std::stack<dereference_to_mat> matrix_order;
     std::function<void(int32_t, int32_t)> 
         process_parenthesis = [&] (int32_t pos_former, int32_t pos_latter) {
             if (pos_former == pos_latter) {
@@ -259,9 +259,9 @@ auto DetermineMatrixChainOrderAndApply(const std::vector<Iter>& matrices) {
     return ApplyMultiplicationInOrder(matrices, total_multiply_operation, parenthesis_pos);
 }
 
-template<typename T>
-std::enable_if_t<std::is_arithmetic<T>::value, Mat<T>>
-AuxOptimizedChainMultiply(std::initializer_list<Mat<T>> il) {
+template<typename MatValueType>
+std::enable_if_t<std::is_arithmetic<MatValueType>::value, Mat<MatValueType>>
+AuxOptimizedChainMultiply(std::initializer_list<Mat<MatValueType>> il) {
     // 这个vector里面包含了指向各个Mat迭代器, 使用花括号初始化
     std::vector<decltype(std::cbegin(il))> matrices{};
     matrices.reserve(il.size());
