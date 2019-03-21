@@ -187,14 +187,10 @@ auto ApplyMultiplicationInOrder(const std::vector<Iter>& matrices,
                 matrix_order.pop();
                 actual_mat_type* ptr_former = nullptr;
                 actual_mat_type* ptr_latter = nullptr;
-                std::size_t row_size;
-                std::size_t col_size;
                 std::visit([&] (auto&& arg) {
-                    row_size = arg->RowSize();
                     ptr_former = &(*arg);
                 }, former);
                 std::visit([&] (auto&& arg) {
-                    col_size = arg->ColSize();
                     ptr_latter = &(*arg);
                 }, latter);
                 // 相乘
@@ -278,10 +274,10 @@ AuxOptimizedChainMultiply(std::initializer_list<Mat<T>> il) {
 /**
  * Return Mat type
  * */
-template<typename... Args>
-auto OptimizedChainMultiply(Args&&... args) {
+template<typename... Mats>
+auto OptimizedChainMultiply(Mats&&... mats) {
     // 包扩展到il上，然后转发
-    return AuxOptimizedChainMultiply({std::forward<Args>(args)...});
+    return AuxOptimizedChainMultiply({std::forward<Mats>(mats)...});
 }
 
 }

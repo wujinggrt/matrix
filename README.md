@@ -335,6 +335,7 @@ std::fprintf(stdout, "Optimezed use time:%f(ms)\n",(dur2 / CLOCKS_PER_SEC));
 
 /**
  * 在单元测试中输出的结果：
+ * 
 TestOptimizedChainMultiply
 15:27:47
 144 ./TEST/unit_test.cpp
@@ -344,6 +345,86 @@ Optimezed use time:93.750000(ms)
 */
 ```
 
-2. 更新对Random的使用，使用了`if constexpr`来使得随机生成器合法，需要C++17.
+2. 对于使用`g++`的时候，开启编译选项'-O2'（或者'-O3'）与否，将会大幅提升程序的性能。比如没有开启编译器优化选项的时候，直接用默认的`-O0`来编译，那么在上述例子的链式乘法中，从单元测试结果中得到耗时如下:
 
-3. 添加了==运算符的重载，能够比较两个相同类型的Mat。不同类型是不能够比较的。
+```C++
+/**
+ * 在单元测试中输出的结果：
+ * 
+TestOptimizedChainMultiply
+15:27:47
+144 ./TEST/unit_test.cpp
+true
+Native use time:687.500000(ms)
+Optimezed use time:93.750000(ms)
+*/
+```
+
+
+启动了不同级别优化选项之后：
+
+```C++
+
+/**
+ * 优化选项 $g++ -std=c++17 -O1 ./test/unit_test.cpp  ./test/main.cpp -o a.out
+ * 
+TestOptimizedChainMultiply
+14:59:16
+144 ./TEST/unit_test.cpp
+true
+Native use time:109.375000(ms)
+Optimezed use time:15.625000(ms)
+*/
+
+/**
+ * 优化选项 $g++ -std=c++17 -O2 ./test/unit_test.cpp  ./test/main.cpp -o a.out
+ * 
+TestOptimizedChainMultiply
+15:01:56
+144 ./test/unit_test.cpp
+true
+Native use time:31.250000(ms)
+Optimezed use time:15.625000(ms)
+*/
+
+/**
+ * 优化选项 $g++ -std=c++17 -O3 ./test/unit_test.cpp  ./test/main.cpp -o a.out
+ * 
+TestOptimizedChainMultiply
+15:03:07
+144 ./test/unit_test.cpp
+true
+Native use time:31.250000(ms)
+Optimezed use time:15.625000(ms)
+```
+
+其中 `-O2` 级别的优化最稳定，效率已经足够了。
+
+为了更加稳定的测试，在测试案例中，使用进行1000次运算，明显时间少于很多，可能是因为流水线的影响：
+
+```C++
+/**
+ * 平均时间十分惊人。。。
+ * 
+TestOptimizedChainMultiply
+15:35:22
+150 ./test/unit_test.cpp
+true
+Native use time:25.468750(ms)
+Optimezed use time:4.078125(ms)
+*/
+```
+
+对比python中的numpy：
+
+```py
+
+# 在Python中同样进行相同规模的矩阵乘法
+# 运算效率几乎一样
+# 0.024140625
+
+```
+
+3. 更新对Random的使用，使用了`if constexpr`来使得随机生成器合法，需要C++17.
+
+4. 添加了==运算符的重载，能够比较两个相同类型的Mat。不同类型是不能够比较的。

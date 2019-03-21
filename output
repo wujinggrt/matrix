@@ -1,6 +1,6 @@
 TestBasicArithmetic
-15:46:24
-57 ./TEST/unit_test.cpp
+15:35:22
+57 ./test/unit_test.cpp
 我是a[0][0]:1
 我是a(1, 1):5
 乘法*:
@@ -60,8 +60,8 @@ a / 2:
 
 
 TestDouble
-15:46:24
-79 ./TEST/unit_test.cpp
+15:35:22
+79 ./test/unit_test.cpp
 2 * a:
 2 4 6
 8 10 12
@@ -92,20 +92,20 @@ size:       3 x 3
 
 
 TestEqual
-15:46:24
-94 ./TEST/unit_test.cpp
+15:35:22
+94 ./test/unit_test.cpp
 true
 
 TestOptimizedChainMultiply
-15:46:24
-144 ./TEST/unit_test.cpp
+15:35:22
+150 ./test/unit_test.cpp
 true
-Native use time:687.500000(ms)
-Optimezed use time:109.375000(ms)
+Native use time:25.468750(ms)
+Optimezed use time:4.078125(ms)
 
 TestLU
-15:46:24
-161 ./TEST/unit_test.cpp
+15:35:22
+167 ./test/unit_test.cpp
 matrix:
 value_type: d
 size:       4 x 1
@@ -136,8 +136,8 @@ size:       4 x 4
  [0, 0, 0, 3]]
 
 TestLUP
-15:46:24
-175 ./TEST/unit_test.cpp
+15:35:22
+181 ./test/unit_test.cpp
 matrix:
 value_type: d
 size:       4 x 1
@@ -154,8 +154,8 @@ size:       4 x 4
  [0.6, -0, 0.4, -3]]
 
 TestLUPSolve
-15:46:24
-238 ./TEST/unit_test.cpp
+15:35:22
+244 ./test/unit_test.cpp
 matrix:
 value_type: d
 size:       3 x 1
@@ -188,8 +188,8 @@ size:       3 x 1
  [0.6]]
 
 TestInverse
-15:46:24
-250 ./TEST/unit_test.cpp
+15:35:22
+256 ./test/unit_test.cpp
 matrix:
 value_type: i
 size:       1 x 1
@@ -202,8 +202,8 @@ size:       3 x 3
  [-0.2, 0.4, -0.2]]
 
 TestDotProduct
-15:46:24
-274 ./TEST/unit_test.cpp
+15:35:22
+280 ./test/unit_test.cpp
 matrix:
 value_type: d
 size:       3 x 3
@@ -236,8 +236,8 @@ size:       3 x 3
  [98, 128, 162]]
 
 TestFilterInGeometic
-15:46:24
-313 ./TEST/unit_test.cpp
+15:35:22
+319 ./test/unit_test.cpp
 tmp3(inverse):
 matrix:
 value_type: d

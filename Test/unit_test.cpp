@@ -125,18 +125,24 @@ void TestOptimizedChainMultiply() {
     Mati a10 = Mati::Random(0, 10, 100, 200);
     Mati a11 = Mati::Random(0, 10, 200, 700);
     
+    Mati result;
     time_point_1 = std::clock();
-    auto result = a0 * a1 * a2 * a3 * a4 *
-        a5 * a6 * a7 * a8 * a9 * a10 * a11;
+    for (int i = 0; i < 1000; ++i) {
+        result = a0 * a1 * a2 * a3 * a4 *
+            a5 * a6 * a7 * a8 * a9 * a10 * a11;
+    }
     time_point_2 = std::clock();
-    auto ret = wj::OptimizedChainMultiply(
-        a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
-    );
+    Mati ret;
+    for (int i = 0; i < 1000; ++i) {
+        ret = wj::OptimizedChainMultiply(
+            a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
+        );
+    }
     time_point_3 = std::clock();
     std::cout << std::boolalpha << (result == ret) << "\n";
 
-    double dur1 = static_cast<double>(time_point_2 - time_point_1) * 1000.;
-    double dur2 = static_cast<double>(time_point_3 - time_point_2) * 1000.;
+    double dur1 = static_cast<double>(time_point_2 - time_point_1) * 1000. / 1000.;
+    double dur2 = static_cast<double>(time_point_3 - time_point_2) * 1000. / 1000.;
     std::fprintf(stdout, "Native use time:%f(ms)\n",(dur1 / CLOCKS_PER_SEC));
     std::fprintf(stdout, "Optimezed use time:%f(ms)\n",(dur2 / CLOCKS_PER_SEC));
 }
