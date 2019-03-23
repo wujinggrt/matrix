@@ -19,16 +19,6 @@ template<typename MatValueType>
 class Mat;
 
 /*************************************************************
- * stream and to_string declaration
-*************************************************************/
-
-template<typename MatValueType>
-std::ostream& operator<<(std::ostream& os, const Mat<MatValueType>& mat);
-
-template<typename MatValueType>
-std::string to_string(const Mat<MatValueType>& mat);
-
-/*************************************************************
  * Sovling linear declaration
 *************************************************************/
 
@@ -58,11 +48,6 @@ public:
     using iterator = decltype(data_.begin());
     using value_type = T;
     using size_type = std::size_t;
-
-    template<typename MatValueType>
-    friend std::ostream& operator<<(std::ostream& os, const Mat<MatValueType>& mat);
-    template<typename MatValueType>
-    friend std::string to_string(const Mat<MatValueType>& mat);
 
 public:
     Mat(std::initializer_list<std::vector<T>> ls)

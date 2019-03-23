@@ -105,7 +105,7 @@ std::ostream& operator<<(std::ostream& os, const Mat<T>& mat) {
     for (int32_t i = 0; i < mat.RowSize(); ++i) {
         os << (i == 0 ? "" : " ") << "[";
         for (int32_t j = 0; j < mat.ColSize(); ++j) {
-            os << mat.data_[i][j] << (j == mat.ColSize() - 1 ? "" : ", ");
+            os << mat(i, j) << (j == mat.ColSize() - 1 ? "" : ", ");
         }
         os << "]" << (i == mat.RowSize() - 1 ? "" : "\n");
     }
@@ -126,7 +126,7 @@ std::string to_string(const Mat<T>& mat) {
     for (int32_t i = 0; i < mat.RowSize(); ++i) {
         ret += (i == 0 ? "" : " ") + std::string("[ ");
         for (int32_t j = 0; j < mat.ColSize(); ++j) {
-            ret += std::to_string(mat.data_[i][j]) + std::string(", ");
+            ret += std::to_string(mat(i, j)) + std::string(", ");
         }
         ret += "]" + std::string(i == mat.RowSize() - 1 ? "" : "\n");
     }
