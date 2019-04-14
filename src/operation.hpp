@@ -13,10 +13,12 @@ namespace wj{
  * binary operator overload implementation
 *************************************************************/
 
-// SFINAE 来限制num必须是arithmetic 
-// 这个函数主要用来完成单个数加上这个Mat，
+// 使用 SFINAE 来限制 num 必须是 arithmetic, 
+// 也就是能够与矩阵中元素进行四则运算的。
+// 这个函数主要用来完成 num 加上这个 Mat 中的所有元素。
 // 然后给Mat中的元素与他进行进行op(num, each src element)
 template<typename NumType, typename MatValueType, typename BinaryOperation>
+inline
 Mat<MatValueType> DoBinaryOperate(
                                   NumType num,
                                   const Mat<MatValueType>& src,
@@ -25,36 +27,46 @@ Mat<MatValueType> DoBinaryOperate(
                                       std::is_arithmetic<NumType>::value
                                       >* = nullptr) {
     Mat<MatValueType> ret(src.RowSize(), src.ColSize());
-    MatValueType casted_num = static_cast<MatValueType>(num);
+    MatValueType casted_num;
+    if constexpr (std::is_same_v<NumType, MatValueType>) {
+        casted_num = num;
+    } else {
+        casted_num = static_cast<MatValueType>(num);
+    }
     for (std::size_t i = 0; i < src.RowSize(); ++i) {
         for (std::size_t j = 0; j < src.ColSize(); ++j) {
-            ret[i][j] = op(casted_num, src(i, j));
+            ret(i, j) = op(casted_num, src(i, j));
         }
     }
     return ret;
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator+(NumType num, const Mat<MatValueType>& mat) {
     return DoBinaryOperate(num, mat, std::plus<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator-(NumType num, const Mat<MatValueType>& mat) {
     return DoBinaryOperate(num, mat, std::minus<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator*(NumType num, const Mat<MatValueType>& mat) {
     return DoBinaryOperate(num, mat, std::multiplies<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator/(NumType num, const Mat<MatValueType>& mat) {
     return DoBinaryOperate(num, mat, std::divides<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType, typename BinaryOperation>
+inline
 Mat<MatValueType> DoReverseBinaryOperate(
                                          NumType num,
                                          const Mat<MatValueType>& src,
@@ -63,31 +75,40 @@ Mat<MatValueType> DoReverseBinaryOperate(
                                               std::is_arithmetic<NumType>::value
                                               >* = nullptr) {
     Mat<MatValueType> ret(src.RowSize(), src.ColSize());
-    MatValueType casted_num = static_cast<MatValueType>(num);
+    MatValueType casted_num;
+    if constexpr (std::is_same_v<NumType, MatValueType>) {
+        casted_num = num;
+    } else {
+        casted_num = static_cast<MatValueType>(num);
+    }
     for (std::size_t i = 0; i < src.RowSize(); ++i) {
         for (std::size_t j = 0; j < src.ColSize(); ++j) {
-            ret[i][j] = op(src(i, j), num);
+            ret(i, j) = op(src(i, j), casted_num);
         }
     }
     return ret;
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator+(const Mat<MatValueType>& mat, NumType num) {
     return DoReverseBinaryOperate(num, mat, std::plus<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator-(const Mat<MatValueType>& mat, NumType num) {
     return DoReverseBinaryOperate(num, mat, std::minus<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator*(const Mat<MatValueType>& mat, NumType num) {
     return DoReverseBinaryOperate(num, mat, std::multiplies<MatValueType>());
 }
 
 template<typename NumType, typename MatValueType>
+inline
 Mat<MatValueType> operator/(const Mat<MatValueType>& mat, NumType num) {
     return DoReverseBinaryOperate(num, mat, std::divides<MatValueType>());
 }

@@ -173,18 +173,20 @@ public:
     Mat<T> operator*(const Mat<T>& other) const {
         if (ColSize() != other.RowSize()) {
             throw std::invalid_argument(std::string("Occured in mupltiplication:\nincompatible dimensions\n") + 
-                "right-matrix rows, cols:" + std::to_string(RowSize()) + ", " + std::to_string(ColSize()) +
-                "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize())
-                );
+                                        "right-matrix rows, cols:" + std::to_string(RowSize()) + ", " + std::to_string(ColSize()) +
+                                        "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize()));
         }
 
         Mat<T> ret(data_.size(), other.ColSize());
+        auto this_row_size = RowSize();
+        auto this_col_size = ColSize();
+        auto other_col_size = other.ColSize();
         // this rows
-        for (std::size_t i = 0; i < RowSize(); ++i) {
+        for (std::size_t i = 0; i < this_row_size; ++i) {
             // other cols
-            for (std::size_t j = 0; j < other.ColSize(); ++j) {
+            for (std::size_t j = 0; j < other_col_size; ++j) {
                 ret[i][j] = 0.;
-                for (std::size_t k = 0; k < ColSize(); ++k) {
+                for (std::size_t k = 0; k < this_col_size; ++k) {
                     ret[i][j] += data_[i][k] * other.data_[k][j];
                 }
             }
@@ -286,8 +288,7 @@ private:
                                         place + 
                                         std::string("incompatible dimensions\n") +
                                         "right-matrix rows, cols:" + std::to_string(RowSize()) + ", " + std::to_string(ColSize()) +
-                                        "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize())
-                                        );
+                                        "\nleft-matrx rows, cols:" + std::to_string(other.RowSize()) + ", " + std::to_string(other.ColSize()));
         }
     }
 };
